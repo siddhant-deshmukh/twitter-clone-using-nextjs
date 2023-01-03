@@ -10,6 +10,9 @@ const createNewUser = async (credentials : API_Authenticate_RequestData) : Promi
     try {
       if (name && email && provider && (!(provider==="google"||provider==="github")||sub) && (!(provider==="signup_email_password")||password)) {
         var _user:IUser = {name, email, auth_complete:false,accounts:{}, dob}
+        if(!user_name){
+          _user.user_name = await getRandomUserName(name);
+        }
         if(provider==="google" || provider==="github"){
           _user.accounts[provider] = {sub}
         }else if(provider==="signup_email_password"){
@@ -17,7 +20,6 @@ const createNewUser = async (credentials : API_Authenticate_RequestData) : Promi
           var passwordhash : string = await bcrypt.hash(password,10);
           _user.accounts["password"] = {password:passwordhash}
           _user.password = passwordhash
-          _user.user_name = user_name
         }else{
           return {msg:'Incorrect Provider',error:"data_incomplete"}
         }
@@ -34,12 +36,30 @@ const createNewUser = async (credentials : API_Authenticate_RequestData) : Promi
     }
 }
 
+const getRandomUserName = async (full_name : string) : Promise<string>   => {
+  var name:string = full_name.slice(0,5).trim();
+  var user_name : string = name;
+  const len : number = 9 - name.length  
+  for(var i=0;i<10;i++){
+    var min = 10*len;
+    var max = 10*(len+1)-1;
+    var num = Math.floor(Math.random() * (max - min + 1)) ;
+    user_name = name + num.toString()
+    const check_user = await User.findOne({user_name},["user_name"])
+    if(!check_user){
+      return user_name
+    }
+  }
+  return user_name
+}
+
 const handler  = async (req:NextApiRequest, res:NextApiResponse<any>) : Promise<any> => {
     try{
       if (req.method === 'POST') {
         // Check if name, email or password is provided
         const credentials : API_Authenticate_RequestData = req.body;
-        const { email, password,provider,sub} = credentials
+        const { name, email, password,user_name, sub, provider} = credentials
+        
         const check_user = await User.findOne({email},["email","name","auth_complete","accounts","user_name"])
         
         if(provider === "google" || provider === "github"){
@@ -90,4 +110,4 @@ const handler  = async (req:NextApiRequest, res:NextApiResponse<any>) : Promise<
     }
   };
   
-  export default connectDB(handler);
+export default connectDB(handler);

@@ -35,7 +35,7 @@ const UserSchema = new mongoose.Schema<IUser>({
     auth_complete:{type:Boolean,required:true,default:false},
     accounts: {type:Map,required:true} ,
 
-    user_name : {type:String,maxLength:10,sparse:false},
+    user_name : {type:String,maxLength:10,sparse:false,required:true,unique:true},
     dob:{type:Date,max:Date.now()},
     about:{type:String,maxLength:150},
     followers:[{type: mongoose.Schema.Types.ObjectId, ref: 'followers'}],

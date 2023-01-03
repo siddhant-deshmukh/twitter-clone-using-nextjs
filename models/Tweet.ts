@@ -16,13 +16,22 @@ export interface IMedia{
     type:"img" | "video", 
     url:string
 }
-export interface ITweet{
-    author : Types.ObjectId,
-    parent_tweet : Types.ObjectId | null,
-    time : Date,
-    num_views : number,
+export interface ITweetContent{
+    parent_tweet : string | null,
     text : string,
-    tagged_people : [Types.ObjectId],
+    tagged_people : string[],
+    content? : IContent,
+    author? : String,
+}
+export interface ITweet extends ITweetContent{
+   
+
+    who_can_reply : [Types.ObjectId] ,
+    who_can_see : [Types.ObjectId] ,
+
+    time : Date,
+
+    num_views : number,
     num_comments : number,
     comment_tweets : [Types.ObjectId],
     num_quotes : number,
@@ -30,11 +39,9 @@ export interface ITweet{
     num_likes : number,
     liked_by : [Types.ObjectId],
     num_retweet : number,
-    retweet_by : [Types.ObjectId],
-    who_can_reply : [Types.ObjectId] ,
-    who_can_see : [Types.ObjectId] ,
-    content : IContent
+    retweet_by : [Types.ObjectId],    
 }
+
 const pollSchema = new mongoose.Schema<IPoll>({
     options:[String],
     counting:[Number],
@@ -53,9 +60,15 @@ const contentSchema = new mongoose.Schema<IContent>({
 
 const TweetSchema = new mongoose.Schema<ITweet>({
     author : {type:mongoose.Schema.Types.ObjectId,required:true},
-    parent_tweet : {type:mongoose.Schema.Types.ObjectId,required:true},
+    parent_tweet : {type:mongoose.Schema.Types.ObjectId},
     text : {type:String,maxlength:400,default:""},
-    time : {type: Date,required:true},
+    content : contentSchema,
+    tagged_people : [{type:mongoose.Schema.Types.ObjectId,ref:"User"}],
+    
+    who_can_reply : [{type:mongoose.Schema.Types.ObjectId,ref:"User"}],
+    who_can_see : [{type:mongoose.Schema.Types.ObjectId,ref:"User"}],
+
+    time : {type: Date,required:true,default:Date.now()},
     num_views : {type: Number,default:0},
     num_likes : {type: Number,default:0},
     num_comments : {type: Number,default:0},
@@ -65,10 +78,7 @@ const TweetSchema = new mongoose.Schema<ITweet>({
     retweet_by : [{type:mongoose.Schema.Types.ObjectId,ref:"User"}],
     quotes_tweets : [{type:mongoose.Schema.Types.ObjectId,ref:"Tweet"}],
     comment_tweets : [{type:mongoose.Schema.Types.ObjectId,ref:"Tweet"}],
-    tagged_people : [{type:mongoose.Schema.Types.ObjectId,ref:"User"}],
-    who_can_reply : [{type:mongoose.Schema.Types.ObjectId,ref:"User"}],
-    who_can_see : [{type:mongoose.Schema.Types.ObjectId,ref:"User"}],
-    content : contentSchema
+    
 })
 
 const Tweet = mongoose.models.Tweet || mongoose.model<ITweet>("Tweet", TweetSchema);

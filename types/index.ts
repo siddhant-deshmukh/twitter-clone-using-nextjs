@@ -1,5 +1,22 @@
+import { Types } from "mongoose"
+import React from "react"
 import { IUser } from "../models/User"
 
+export interface IModalData {
+  title : string,
+  url : string,
+  component?: (arg0:any) => JSX.Element,
+  type : "tweet"|"login"|"signup"|"add_username"| "add_birthdate" | "liked_by" | "retweeted_by" | "edit_profile" |"",
+  parameters? : any
+}
+export interface ITwitterContext{
+  modalOn:boolean,
+  setModalOn : React.Dispatch<React.SetStateAction<boolean>>,
+  modalData:IModalData,
+  setModalData:React.Dispatch<React.SetStateAction<IModalData>>,
+  openModal: ({ title, url, component,parameters }: IModalData) => void,
+  closeModal: ({goBack} : {goBack? : boolean} ) => void
+} 
 export interface UserEmailPasswordSingUpCredentials {
   name : string ,
   email : string,
@@ -7,6 +24,11 @@ export interface UserEmailPasswordSingUpCredentials {
   user_name? : string ,
   dob : Date ,
 }
+
+export interface ITweetEditorProps{
+  motive : "tweet" | "reply" | "quote",
+  otherTweet? : Types.ObjectId 
+} 
 
 export interface UserEmailPasswordLogInCredentials {
   email : string,
