@@ -6,10 +6,10 @@ import connectDB from "../../middlewares/mongodb"
 import {API_SignUp_ResponseData} from "../../types/index"
 
 const createNewUser = async (credentials : API_Authenticate_RequestData) : Promise<any> => {
-    const { name, email, password,user_name, sub, dob ,provider}  = credentials
+    const { name, email, password,user_name, sub ,provider}  = credentials
     try {
       if (name && email && provider && (!(provider==="google"||provider==="github")||sub) && (!(provider==="signup_email_password")||password)) {
-        var _user:IUser = {name, email, auth_complete:false,accounts:{}, dob}
+        var _user:IUser = {name, email, auth_complete:false,accounts:{},user_name}
         if(!user_name){
           _user.user_name = await getRandomUserName(name);
         }
@@ -40,9 +40,10 @@ const getRandomUserName = async (full_name : string) : Promise<string>   => {
   var name:string = full_name.slice(0,5).trim();
   var user_name : string = name;
   const len : number = 9 - name.length  
+  console.log({len})
   for(var i=0;i<10;i++){
-    var min = 10*len;
-    var max = 10*(len+1)-1;
+    var min = 10**len;
+    var max = 10**(len+1)-1;
     var num = Math.floor(Math.random() * (max - min + 1)) ;
     user_name = name + num.toString()
     const check_user = await User.findOne({user_name},["user_name"])
@@ -59,7 +60,7 @@ const handler  = async (req:NextApiRequest, res:NextApiResponse<any>) : Promise<
         // Check if name, email or password is provided
         const credentials : API_Authenticate_RequestData = req.body;
         const { name, email, password,user_name, sub, provider} = credentials
-        
+        console.log(credentials)
         const check_user = await User.findOne({email},["email","name","auth_complete","accounts","user_name"])
         
         if(provider === "google" || provider === "github"){

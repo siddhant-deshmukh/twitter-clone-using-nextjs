@@ -8,6 +8,20 @@ import { authOptions } from "../auth/[...nextauth]"
 import { getToken } from "next-auth/jwt"
 const secret = process.env.NEXTAUTH_SECRET
 
+export const GetUserSnippet = async (_id?:string,email?:string,username?:string) : Promise<{_id:string,name:string,username:string,avatar?:string,about?:string} | null>  =>{
+  var check_user;
+  const parameters : string[] = ["_id","user_name","avatar","about","name"]
+  if(_id){
+    check_user = await User.findById(_id,parameters) 
+  }else if(email){
+    check_user = await User.findOne({email},parameters) 
+  }else if(username){
+    check_user = await User.findOne({username},parameters) 
+  }else{
+    return null
+  }
+  return check_user
+}
 
 const handler  = async (req:NextApiRequest, res:NextApiResponse<any>) : Promise<any> => {
     try{
@@ -27,18 +41,8 @@ const handler  = async (req:NextApiRequest, res:NextApiResponse<any>) : Promise<
         // }
       }else if(req.method === 'GET'){
         const {username ,_id,email}  = req.query
-        var check_user;
-        const parameters : string[] = ["_id","user_name","avatar","about"]
-        if(_id){
-            check_user = await User.findById(_id,parameters) 
-        }else if(email){
-            check_user = await User.findOne({email},parameters) 
-        }else if(username){
-            check_user = await User.findOne({username},parameters) 
-        }else{
-            return res.status(422).json({msg:'invalid url parameter'});
-        }
-        console.log("Here as well")
+        var check_user = await GetUserSnippet(_id as string|undefined ,email as string|undefined,username as string|undefined);        
+        //console.log("Here as well")
         //console.log(check_user)
         if(check_user){
             return res.status(201).json({user:check_user})

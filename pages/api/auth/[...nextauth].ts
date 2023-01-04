@@ -44,13 +44,11 @@ export const authOptions : NextAuthOptions = {
       credentials: {
         email: { label: "Email", type: "text", placeholder: "example@gmail.com" },
         password: {  label: "Password", type: "password" },
-        name: { label: "Name", type: "text"},
-        user_name: { label: "User Name", type: "text"},
-        dob: { label: "Date of birth", type: "Date"},
+        name: { label: "Name", type: "text"}
       },
       async authorize(credentials , req ) : Promise<UserSessionProfileData|null> {
 
-        if(!credentials || !credentials.email || !credentials.password || !credentials.name || !credentials.user_name || !credentials.dob) return null;
+        if(!credentials || !credentials.email || !credentials.password || !credentials.name ) return null;
         const user : UserSessionProfileData =  { id: "1",name:credentials.name , email:credentials.email} 
   
         // If no error and we have user data, return it

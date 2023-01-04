@@ -15,7 +15,7 @@ export default function Component() {
   return (
     <>
       Not signed in <br />
-      <button onClick={() => signIn("signup_email_password",{name:"Meow",email:"g@gmail.com",password:"password"})}>Sign in</button>
+      <button onClick={() => signIn()}>Sign in</button>
     </>
   )
   //"signup_email_password",{name:"Meow",email:"g@gmail.com",password:"password"}

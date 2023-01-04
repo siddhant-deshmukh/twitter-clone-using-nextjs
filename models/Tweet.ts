@@ -17,6 +17,7 @@ export interface IMedia{
     url:string
 }
 export interface ITweetContent{
+    _id?:string,
     parent_tweet : string | null,
     text : string,
     tagged_people : string[],
