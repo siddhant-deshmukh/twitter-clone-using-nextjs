@@ -3,10 +3,11 @@ import { UserEmailPasswordLogInCredentials } from '../../../types'
 import User from "../../../models/User"
 import connectDB from "../../../middlewares/mongodb"
 import { API_SignUp_ResponseData } from "../../../types/index"
-import Tweet from '../../../models/Tweet'
+import Tweet, { ITweet } from '../../../models/Tweet'
 import mongoose from 'mongoose'
 import { unstable_getServerSession } from "next-auth/next"
 import { authOptions } from "../auth/[...nextauth]"
+import { GetUserSnippet } from '../user/details'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<any>): Promise<any> => {
   try {
@@ -49,9 +50,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>): Promise<
         const session = await unstable_getServerSession(req, res, authOptions)
 
         if (!get || get==="tweet") {
-          const tweet = await getTweet(tweet_id,session?.user?._id)
-          if (!tweet || tweet.length === 0) return res.status(401).json({ msg: 'invalid tweet_id' });
-          return res.status(201).json({ tweet: tweet[0] });
+          const tweetList = await getTweet(tweet_id,session?.user?._id)
+          if (!tweetList || tweetList.length === 0) return res.status(401).json({ msg: 'invalid tweet_id' });
+          return res.status(201).json({ tweet: tweetList[0] });
         }else if( (get ==="like" || get ==="comments" || get==="quote_tweets" || get==="retweet") && starting_at && total){
           const response_ = await getTweetRelatedItems(tweet_id,starting_at as number,total,get)
           return res.status(response_.status).json(response_)
@@ -168,13 +169,35 @@ export async function getTweetRelatedItems(tweet_id:string,starting_at: number, 
 }
 export async function  getTweet(tweet_id:string,_id?:string){
   if(!_id){
-    const tweet = await Tweet.aggregate([
+    const tweetList : ITweet[] = await Tweet.aggregate([
       { $match: { _id: new mongoose.Types.ObjectId(tweet_id) } },
       { $project: { "_id": 1, "who_can_reply": 0, "who_can_see": 0,"comment_tweets": 0, "quotes_tweets": 0, "liked_by": 0,"retweet_by": 0}},
     ])
-    return tweet
+    const finalList = await Promise.all(tweetList.map(async (tweet,num)=>{
+      if(tweet && tweet.author){
+        let result_ = await GetUserSnippet(tweet.author)
+        return { ...tweet, authorDetails : result_}
+      }
+    }))
+    // await Async.map(tweetList,
+    //   async (tweet : ITweet)=>{
+    //     if(tweet && tweet.author){
+    //       let result_ = await GetUserSnippet(tweet.author)
+    //       return { ...tweet, authorDetails : result_}
+    //     }
+    //   },
+    // ).then((err,results)=>{
+    //   if(err) console.log(err);
+    //   if(results){
+    //     finalList.push(results)
+    //     //console.log("results :",results,finalList)
+    //     //return results
+    //   }
+    // });
+    //console.log("finalList", finalList)
+    return finalList
   }else{
-    const tweet = await Tweet.aggregate([
+    const tweetList = await Tweet.aggregate([
       { $match: { _id: new mongoose.Types.ObjectId(tweet_id) } },
       {$addFields:{"has_liked" : {
                   $in : [new mongoose.Types.ObjectId(_id), "$liked_by"]
@@ -186,7 +209,13 @@ export async function  getTweet(tweet_id:string,_id?:string){
                   }
       },
     ])
-    return tweet
+    const finalList = await Promise.all(tweetList.map(async (tweet,num)=>{
+      if(tweet && tweet.author){
+        let result_ = await GetUserSnippet(tweet.author)
+        return { ...tweet, authorDetails : result_}
+      }
+    }))
+    return finalList
   }
 }
 

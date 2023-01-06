@@ -8,7 +8,7 @@ import { authOptions } from "../auth/[...nextauth]"
 import { getToken } from "next-auth/jwt"
 const secret = process.env.NEXTAUTH_SECRET
 
-export const GetUserSnippet = async (_id?:string,email?:string,username?:string) : Promise<{_id:string,name:string,username:string,avatar?:string,about?:string} | null>  =>{
+export const GetUserSnippet = async (_id?:string,email?:string,username?:string) : Promise<{_id:string,name:string,username:string,avatar?:string,about?:string} | undefined | null>  =>{
   var check_user;
   const parameters : string[] = ["_id","user_name","avatar","about","name"]
   if(_id){
@@ -18,8 +18,9 @@ export const GetUserSnippet = async (_id?:string,email?:string,username?:string)
   }else if(username){
     check_user = await User.findOne({username},parameters) 
   }else{
-    return null
+    return undefined
   }
+  //console.log(check_user)
   return check_user
 }
 

@@ -8,6 +8,7 @@ import { authOptions } from "../auth/[...nextauth]"
 import { getToken } from "next-auth/jwt"
 import Tweet, { ITweet, ITweetContent } from '../../../models/Tweet'
 import mongoose from 'mongoose'
+import { GetUserSnippet } from '../user/details'
 const secret = process.env.NEXTAUTH_SECRET
 
 
@@ -60,16 +61,15 @@ const handler  = async (req:NextApiRequest, res:NextApiResponse<any>) : Promise<
 
         var tweets = [] 
         if ((session && session.user.user_name && session.user._id)){
-          const tweets = await Tweet.aggregate([
+          tweets = await Tweet.aggregate([
             {$skip : starting_at},
             {$limit:total},
-            { $project: { "_id": 1, "who_can_reply": 0, "who_can_see": 0,"comment_tweets": 0, "quotes_tweets": 0, "liked_by": 0,"retweet_by": 0}},
-
             {$addFields:{"has_liked" : {
-                        $in : [new mongoose.Types.ObjectId(session.user._id), "$liked_by"]
-                      }, "has_retweet":{
-                        $in : [new mongoose.Types.ObjectId(session.user._id), "$retweet_by"]
-                      }}},
+              $in : [new mongoose.Types.ObjectId(session.user._id), "$liked_by"]
+            }, "has_retweet":{
+              $in : [new mongoose.Types.ObjectId(session.user._id), "$retweet_by"]
+            }}},
+            { $project: { "_id": 1, "who_can_reply": 0, "who_can_see": 0,"comment_tweets": 0, "quotes_tweets": 0, "liked_by": 0,"retweet_by": 0}},            
           ])
         }else{
           tweets =await Tweet.aggregate([
@@ -78,7 +78,14 @@ const handler  = async (req:NextApiRequest, res:NextApiResponse<any>) : Promise<
             { $project: { "_id": 1, "who_can_reply": 0, "who_can_see": 0,"comment_tweets": 0, "quotes_tweets": 0, "liked_by": 0,"retweet_by": 0}},
           ])
         }
-        res.status(201).json(tweets)
+        const finalList = await Promise.all(tweets.map(async (tweet,num)=>{
+          if(tweet && tweet.author){
+            let result_ = await GetUserSnippet(tweet.author)
+            return { ...tweet, authorDetails : result_,num}
+          }
+        }))
+        
+        res.status(201).json(finalList)
       }else{
         res.status(422).json({msg:'req_method_not_supported'});
       }

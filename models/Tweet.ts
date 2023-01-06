@@ -22,7 +22,15 @@ export interface ITweetContent{
     text : string,
     tagged_people : string[],
     content? : IContent,
-    author? : String,
+    author? : string,
+    authorDetails? : {
+        _id : Types.ObjectId,
+        name?:string,
+        user_name:string,
+        avatar?:string,
+        about?:string
+
+    }
 }
 export interface ITweet extends ITweetContent{
    
@@ -34,13 +42,13 @@ export interface ITweet extends ITweetContent{
 
     num_views : number,
     num_comments : number,
-    comment_tweets : [Types.ObjectId],
+    comment_tweets? : [Types.ObjectId],
     num_quotes : number,
-    quotes_tweets : [Types.ObjectId],
+    quotes_tweets? : [Types.ObjectId],
     num_likes : number,
-    liked_by : [Types.ObjectId],
+    liked_by? : [Types.ObjectId],
     num_retweet : number,
-    retweet_by : [Types.ObjectId],    
+    retweet_by? : [Types.ObjectId],    
 }
 
 const pollSchema = new mongoose.Schema<IPoll>({
