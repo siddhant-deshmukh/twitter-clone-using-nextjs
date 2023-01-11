@@ -1,20 +1,31 @@
 import mongoose,{Types} from "mongoose";
-
+import { IMedia } from "./Media";
 export interface IPoll{
+    _id? : Types.ObjectId,
     parent_tweet : Types.ObjectId,
     options : [string],
     counting : [number],
     minutes_len:number //10080 max
 }
+
+export interface IGif {
+    type:"image/gif",
+    url:string,
+    size:number,   
+}
 export interface IContent{
-    media? : [IMedia],
-    gif? : string,
+    content_type : "media"|"gif"|"poll"|"tweet"|"",
+    media? : Types.ObjectId[],
+    gif? : Types.ObjectId,
     poll? : IPoll,
     tweet? : Types.ObjectId,
 }
-export interface IMedia{
-    type:"img" | "video", 
-    url:string
+export interface ITweetFileAttachments{
+    content_type : "media"|"gif"|"poll"|"tweet"|"",
+    media? : IMedia[],
+    gif? :IMedia,
+    poll? : IPoll,
+    tweet? : Types.ObjectId,
 }
 export interface ITweetContent{
     _id?:string,
@@ -29,7 +40,6 @@ export interface ITweetContent{
         user_name:string,
         avatar?:string,
         about?:string
-
     }
 }
 export interface ITweet extends ITweetContent{
@@ -56,13 +66,10 @@ const pollSchema = new mongoose.Schema<IPoll>({
     counting:[Number],
     minutes_len:{type:Number,max:10080}
 },{_id:true})
-const mediaSchema = new mongoose.Schema<IMedia>({
-    type:String,
-    url:String,
-},{_id:false})
+
 const contentSchema = new mongoose.Schema<IContent>({
-    media:[mediaSchema],
-    gif:String,
+    media:[{type:mongoose.Schema.Types.ObjectId,ref:"Media"}],
+    gif:[{type:mongoose.Schema.Types.ObjectId,ref:"Media"}],
     poll:pollSchema,
     tweet:{type:mongoose.Schema.Types.ObjectId,ref:"Tweet"},
 },{_id:false})

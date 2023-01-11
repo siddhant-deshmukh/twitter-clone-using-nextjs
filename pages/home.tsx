@@ -29,25 +29,27 @@ const Home : NextPageWithLayout= () =>{
   //     })
   // },[setTweetList])
   const fetchPosts = async ({ pageParam = 0 }) => {
-    console.log(pageParam)
+    //console.log(pageParam)
+
     const response = await fetch(
-      `/api/tweet?startingAt=${pageParam}&inTotal=3`
+      `/api/tweet?startingAt=${pageParam}&inTotal=10`
     );
     const results = await response.json();
-    return { results, nextPage: pageParam + 3,totalPages: 100 };
+    console.log(results)
+    return { results, nextPage: pageParam + 10,totalPages: 100 };
   };
-  const { data, isLoading, isError, hasNextPage, fetchNextPage } =
-  useInfiniteQuery("posts", fetchPosts, {
+  const { data, isLoading, isError, hasNextPage, fetchNextPage } = useInfiniteQuery(["posts"], fetchPosts, {
     getNextPageParam: (lastPage, pages) => {
       //console.log(lastPage.results.length , lastPage.nextPage)
       if (lastPage.results.length > 0) return lastPage.nextPage;
       return undefined;
     },
+    keepPreviousData: true,
   });
   return (
     <>
       <main>
-        <div className='font-semibold px-3 py-2'>Home</div>
+        <div className='font-semibold py-2'>Home</div>
         <TweetEditor motive='tweet' />
         {/* <div>
           {tweetList && tweetList.map((tweet,index)=>{

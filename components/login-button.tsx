@@ -6,7 +6,7 @@ export default function Component() {
     return (
       <>
         Signed in as {session.user?.email} <br />
-        {JSON.stringify(session.user)}<br/>
+        {/* {JSON.stringify(session.user)}<br/> */}
 
         <button onClick={() => signOut()}>Sign out</button>
       </>

@@ -20,8 +20,8 @@ const SideBar = () => {
   const router = useRouter()
   const {setModalOn,openModal} = useContext(AppContext) as ITwitterContext
   return (
-    <header className='h-full' style={{width:"251px"}}>
-        <div className="overflow-y-auto py-4 px-3 h-full dark:bg-gray-800">
+    <header className='h-full w-fit' style={{width:"251px"}}>
+        <div className="overflow-y-auto py-4 px-3 h-full dark:bg-gray-800 fixed inset-y-0">
             <Link href="/" className="flex items-center pl-2.5 mb-3">
                 <img src="/twitter.ico" className="mr-3 h-6 w-6" alt="Flowbite Logo" />
             </Link>

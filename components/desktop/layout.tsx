@@ -52,12 +52,12 @@ export default function Layout({children} : {children : React.ReactNode}){
         <link rel="icon" href="/twitter.ico" />
       </Head>
       <main id="desktop_layout">
-          <div className='grid  mx-auto grid-flow-col  h-screen w-fit'>
+          <div className='grid  mx-auto grid-flow-col h-screen w-fit relative'>
             <SideBar/>
-            <div className=' shadow-md' style={{width:"580px"}}>
+            <div className='bg-red-200 shadow-md' style={{width:"580px"}}>
               {children}
             </div>
-            <div className=''  style={{width:"350px"}}>
+            <div className='sticky inset-y-0 right-0'  style={{width:"350px"}}>
                 <LoginBtn />
             </div>
           </div>

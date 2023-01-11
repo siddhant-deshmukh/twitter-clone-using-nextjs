@@ -27,8 +27,8 @@ export default function MyApp({ Component, pageProps:{session , ...pageProps} }:
             <Component {...pageProps} />  
             )
           }
+          <ReactQueryDevtools />
         </QueryClientProvider >
       </AppProvider>
-      
   </SessionProvider>
 }

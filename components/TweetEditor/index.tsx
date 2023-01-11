@@ -1,34 +1,68 @@
-import React, { useCallback, useState } from "react";
-import { ITweetEditorProps } from "../../types";
+import React, { useCallback, useContext, useState } from "react";
+import { ITweetEditorProps, ITwitterContext } from "../../types";
 import { useSession } from "next-auth/react";
-import { ITweetContent } from "../../models/Tweet";
+import { IContent,  ITweetContent, ITweetFileAttachments } from "../../models/Tweet";
+import AppContext from "../../context/TwitterContext";
+import ContentImgs from "./ContentImgs";
+import { IMedia } from "../../models/Media";
+import Axios from "axios"
 
 const TweetEditor = ({motive,otherTweet}:ITweetEditorProps) => {
     const [tweetText,setTweetText] = useState<string>("Whatsup guys!")
-    
+    const [tweetAttachments,setTweetAttachments] = useState<ITweetFileAttachments>({content_type:""})
+    const {closeModal,modalData} = useContext(AppContext) as ITwitterContext 
+
     //@ts-ignore
     const uploadTweet = useCallback(async (event) =>{
       event.preventDefault()
       const tweetContent : ITweetContent  = {
         text:tweetText,
         parent_tweet:null,
-        tagged_people:[]
+        tagged_people:[],
+        content:{
+          content_type:tweetAttachments.content_type,
+        }
       }
-      if(tweetText.trim() != ""){
-        console.log(process.env.NEXT_PUBLIC_URL)
-        const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/tweet`,{
-          method:'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          //@ts-ignore
-          body:JSON.stringify(tweetContent)
-        }).then((res)=> res.json())
-        //const res = await authenticator()
-        console.log("response",res)
+      
+      if(tweetText.trim() !== "" || tweetAttachments.content_type !== ""){
+        //console.log(process.env.NEXT_PUBLIC_URL)
+        await UploadTweet(tweetContent,tweetAttachments)
+        closeModal({goBack:true})
       }
-    },[tweetText])
+    },[tweetText,tweetAttachments])
     const { data: session } = useSession()
+
+    const handleSelectingMediaBtn = useCallback((e : React.ChangeEvent<HTMLInputElement>) => {
+        // console.log(e?.target?.files)
+        if(!e || !e.target || !e.target.files || !e.target.files.length){
+          console.error("Error in event of handleSelectingMediaBtn")
+          return
+        }
+        let mediaFiles : IMedia[] = [];
+        for(let i=0;i<e?.target?.files?.length;i++){
+          let file = e?.target?.files[i]
+          let url =  URL.createObjectURL(file)
+          //@ts-ignore
+          mediaFiles.push({size:file.size, type:file.type ,url,file})
+        }
+        //console.log(mediaFiles)
+        
+        let new_tweetAttachments : ITweetFileAttachments = {content_type:"media",media:mediaFiles}
+        if(tweetAttachments.media){
+          new_tweetAttachments.media = tweetAttachments.media?.concat(mediaFiles)
+        }
+        setTweetAttachments(new_tweetAttachments)
+        // setTweetContent(prev=>{
+        //   return {
+        //     ...prev,
+        //     content_type:"media"
+        //   }
+        // })
+        console.log(new_tweetAttachments)
+    },[tweetAttachments,setTweetAttachments]) 
+
+    
+
     return (
       <div className="flex" style={{ width: 500 }}>
         { session?.user.image &&
@@ -55,17 +89,25 @@ const TweetEditor = ({motive,otherTweet}:ITweetEditorProps) => {
             >
             
           </div>
+          {
+            tweetAttachments.content_type === "media" && 
+            <ContentImgs tweetAttachments={tweetAttachments} setTweetAttachments={setTweetAttachments} />
+          }
           <div className="flex border-t justify-between w-full border-blue-100 pt-2" style={{fontSize:"15px"}}>
             <div className="flex items-center">
-              <button className="place-content-center">
-                <div className="w-fit p-1.5 hover:bg-blue-50 rounded-full">
-                  <svg viewBox="0 0 24 24" aria-hidden="true" className="w-4 h-4 fill-blue-500">
-                    <g>
-                      <path d="M3 5.5C3 4.119 4.119 3 5.5 3h13C19.881 3 21 4.119 21 5.5v13c0 1.381-1.119 2.5-2.5 2.5h-13C4.119 21 3 19.881 3 18.5v-13zM5.5 5c-.276 0-.5.224-.5.5v9.086l3-3 3 3 5-5 3 3V5.5c0-.276-.224-.5-.5-.5h-13zM19 15.414l-3-3-5 5-3-3-3 3V18.5c0 .276.224.5.5.5h13c.276 0 .5-.224.5-.5v-3.086zM9.75 7C8.784 7 8 7.784 8 8.75s.784 1.75 1.75 1.75 1.75-.784 1.75-1.75S10.716 7 9.75 7z"></path>
-                    </g>
-                  </svg>
-                </div>
-              </button>
+
+              <div>
+                <input type="file" id="select-media" onChange={handleSelectingMediaBtn} accept=".png, .jpg, .gif, .jpeg" hidden/>
+                <label className="place-content-center" htmlFor={"select-media"} >
+                  <div className="w-fit p-1.5 hover:bg-blue-50 rounded-full hover:cursor-pointer">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" className="w-4 h-4 fill-blue-500">
+                      <g>
+                        <path d="M3 5.5C3 4.119 4.119 3 5.5 3h13C19.881 3 21 4.119 21 5.5v13c0 1.381-1.119 2.5-2.5 2.5h-13C4.119 21 3 19.881 3 18.5v-13zM5.5 5c-.276 0-.5.224-.5.5v9.086l3-3 3 3 5-5 3 3V5.5c0-.276-.224-.5-.5-.5h-13zM19 15.414l-3-3-5 5-3-3-3 3V18.5c0 .276.224.5.5.5h13c.276 0 .5-.224.5-.5v-3.086zM9.75 7C8.784 7 8 7.784 8 8.75s.784 1.75 1.75 1.75 1.75-.784 1.75-1.75S10.716 7 9.75 7z"></path>
+                      </g>
+                    </svg>
+                  </div>
+                </label>
+              </div>
               <button className="place-content-center">
                 <div className="w-fit p-1.5 hover:bg-blue-50 rounded-full">
                   <svg viewBox="0 0 24 24" aria-hidden="true" className="w-4 h-4 fill-blue-500">
@@ -132,6 +174,48 @@ const TweetEditor = ({motive,otherTweet}:ITweetEditorProps) => {
         </div>
       </div>
     );
+}
+
+async function UploadTweet(tweetContent:ITweetContent,tweetAttachments:ITweetFileAttachments) {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/tweet`,{
+    method:'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    //@ts-ignore
+    body:JSON.stringify({tweetContent,tweetAttachments})
+  }).then((res)=> res.json())
+  //const res = await authenticator()
+  const {UrlsFields} = res
+  console.log()
+  console.log("UrlsFields",UrlsFields)
+  console.log()
+
+  UrlsFields.forEach(async ({ url, fields },index:number) => {
+    let file = tweetAttachments.media[index].file
+    let formData = new FormData()
+
+    Object.entries({ ...fields, file }).forEach(([key, value]) => {
+      formData.append(key, value as string)
+      //console.log(formData ,key, value )
+    })
+    console.log(index,formData.get('acl'))
+    const upload = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type':file.type,
+        'x-amz-acl': 'public-read'
+      },
+      mode:'no-cors',
+      body: formData,
+    }).catch(err=>console.log("Error to upload",err))
+  
+    if (upload.ok) {
+      console.log('Uploaded successfully!',upload,url,fields)
+    }
+    
+  });
+  console.log("response",res)
 }
 
 export const curryTweetEditor = ({motive,otherTweet}:ITweetEditorProps) =>{
