@@ -115,7 +115,7 @@ async function getPresignedUrls(_id:string,uploadedTweet:ITweet,tweetAttachments
     const Fields = {
       acl: "public-read",
     };
-    const UrlsFields = []
+    const UrlsFields : {url:string,fields:any}[] = []
     const PromiseArray = tweetAttachments.media?.map((media : IMedia,index:number)=> async (media : IMedia,index:number)=>{
       let Key = `twitter-media-files/${_id}/${uploadedTweet._id?.toString()}_${index}`;
       //console.log(index , key)

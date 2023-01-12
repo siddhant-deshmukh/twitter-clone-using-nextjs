@@ -4,6 +4,7 @@ import { IModalData, ITwitterContext } from "../types";
 import { useContextualRouting } from "next-use-contextual-routing";
 import { curryTweetEditor } from "../components/TweetEditor";
 import { curryAddUserName} from "../components/desktop/ModalComp/components/AddUserName"
+import { curryLikedBy } from "../components/desktop/ModalComp/components/LikedBy";
 export const AppContext = React.createContext<ITwitterContext | null>(null);
 
 //@ts-ignore
@@ -43,6 +44,7 @@ export const AppProvider= ({children}) => {
         case "add_birthdate" :
           break
         case "liked_by" :
+          component = curryLikedBy
           break
         case "retweeted_by" :
           break

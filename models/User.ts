@@ -1,9 +1,17 @@
 import mongoose,{Types} from "mongoose";
 
-export interface IUser{
-    user_name?:string,
-    email:string,
+export interface IUserSnippet{
+    user_name:string,
     name:string,
+    _id?:string,
+    avatar?:String,
+
+}
+
+export interface IUser extends IUserSnippet{
+    
+    email:string,
+    
     dob?:Date,
     auth_complete:boolean,
     accounts:{
@@ -25,7 +33,6 @@ export interface IUser{
     likes?:[Types.ObjectId],
     own_tweets_comments?:[Types.ObjectId],
     joined?:Date,
-    avatar?:String,
     profile_pic?:String
 }
 

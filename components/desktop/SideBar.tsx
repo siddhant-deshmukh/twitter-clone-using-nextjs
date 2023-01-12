@@ -20,12 +20,12 @@ const SideBar = () => {
   const router = useRouter()
   const {setModalOn,openModal} = useContext(AppContext) as ITwitterContext
   return (
-    <header className='h-full w-fit' style={{width:"251px"}}>
-        <div className="overflow-y-auto py-4 px-3 h-full dark:bg-gray-800 fixed inset-y-0">
+    <nav className='h-full  w-fit px-4' style={{width:"220px"}}>
+        <div className="overflow-y-auto py-4  h-full dark:bg-gray-800 fixed inset-y-0">
             <Link href="/" className="flex items-center pl-2.5 mb-3">
                 <img src="/twitter.ico" className="mr-3 h-6 w-6" alt="Flowbite Logo" />
             </Link>
-            <ul className="">
+            <ul className="mb-5">
               {
                 nav_bar_elements.map(ele =>{
                   return(
@@ -44,14 +44,16 @@ const SideBar = () => {
               Tweet 
             </button> */}
             <Link href='?modal=tweet' as='/component/tweet' shallow>
-              Tweet
+              <button className='bg-blue-500 py-2.5 text-sm rounded-full w-full font-semibold text-white'>
+                Tweet 
+              </button>
             </Link>
             <br/>
-            <Link href='?modal=add_username' as='/i/flow/login/username' shallow>
+            {/* <Link href='?modal=add_username' as='/i/flow/login/username' shallow>
               Add Username
-            </Link>
+            </Link> */}
         </div>
-    </header>
+    </nav>
   )
 }
 

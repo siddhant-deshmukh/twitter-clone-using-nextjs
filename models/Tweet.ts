@@ -40,7 +40,9 @@ export interface ITweetContent{
         user_name:string,
         avatar?:string,
         about?:string
-    }
+    },
+    has_retweet? : boolean,
+    has_liked?:boolean,
 }
 export interface ITweet extends ITweetContent{
    

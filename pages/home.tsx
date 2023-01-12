@@ -1,55 +1,44 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from '@next/font/google'
-import styles from '../styles/Home.module.css'
 import Layout from "../components/desktop/layout"
 import { NextPageWithLayout } from './_app'
-import { ReactElement, useCallback, useEffect, useState } from 'react'
-import SideBar from '../components/desktop/SideBar'
-import LoginBtn from '../components/login-button'
+import { ReactElement} from 'react'
 import TweetEditor from '../components/TweetEditor/index'
 import TweetCard from '../components/tweet/TweetCard'
 import { ITweet } from '../models/Tweet'
-const inter = Inter({ subsets: ['latin'] })
-import { useInfiniteQuery} from "react-query"
+import { useInfiniteQuery, useQueryClient} from "react-query"
 import InfiniteScroll from "react-infinite-scroller"
 
 
 const Home : NextPageWithLayout= () =>{
 
-  // const [tweetList,setTweetList] = useState<ITweet[]>([])
-  // useEffect(()=>{
-  //   fetch(`/api/tweet?startingAt=0&inTotal=15`,{method:"GET"})
-  //     .then(res=>res.json())
-  //     .then(data=>{
-  //       console.log(data)
-  //       if(!data.msg){
-  //         setTweetList(data)
-  //       }
-  //     })
-  // },[setTweetList])
-  const fetchPosts = async ({ pageParam = 0 }) => {
+  const fetchTweetFeed = async ({ pageParam = 0 }) => {
     //console.log(pageParam)
-
+    const tweetsPerPage : number = 10
+    const startingTweetIndex : number = tweetsPerPage*pageParam
+    const lastTweetIndex : number = tweetsPerPage*pageParam + 9
     const response = await fetch(
       `/api/tweet?startingAt=${pageParam}&inTotal=10`
     );
     const results = await response.json();
     console.log(results)
-    return { results, nextPage: pageParam + 10,totalPages: 100 };
+    return { results, nextPage: pageParam + tweetsPerPage,tweetsPerPage,startingTweetIndex,lastTweetIndex };
   };
-  const { data, isLoading, isError, hasNextPage, fetchNextPage } = useInfiniteQuery(["posts"], fetchPosts, {
-    getNextPageParam: (lastPage, pages) => {
-      //console.log(lastPage.results.length , lastPage.nextPage)
-      if (lastPage.results.length > 0) return lastPage.nextPage;
-      return undefined;
-    },
-    keepPreviousData: true,
+
+  const { data, isLoading, isError, hasNextPage, fetchNextPage } = useInfiniteQuery({
+      queryKey: ["TweetFeed"], 
+      queryFn:fetchTweetFeed, 
+      staleTime:1000*60*10,
+      // keepPreviousData: true,
+      getNextPageParam: (lastPage, pages) => {
+        //console.log(lastPage.results.length , lastPage.nextPage)
+        if (lastPage.results.length > 0) return lastPage.nextPage;
+        return undefined;
+      }
   });
+  const queryClient = useQueryClient()
   return (
     <>
-      <main>
-        <div className='font-semibold py-2'>Home</div>
+      <main className='w-fit'>
+        <div className='font-semibold py-2 '>Home</div>
         <TweetEditor motive='tweet' />
         {/* <div>
           {tweetList && tweetList.map((tweet,index)=>{
@@ -64,17 +53,19 @@ const Home : NextPageWithLayout= () =>{
           <p>There was an error</p>
         ) : (
           //@ts-ignore
-          <InfiniteScroll hasMore={hasNextPage} loadMore={fetchNextPage}>
+          <div> <InfiniteScroll hasMore={hasNextPage} loadMore={fetchNextPage}>
             { 
-              data && data?.pages.map((page)=>
-                page.results.map((tweet : ITweet )=>
+              data && data?.pages.map((page,tweetPageNum:number)=>
+                page.results.map((tweet : ITweet,tweetIndex:number )=>
                   <div key={tweet._id}>
-                    <TweetCard TweetData={tweet}/>
+                    {/**@ts-ignore */}
+                    <TweetCard TweetData={tweet} queryClient={queryClient} tweetIndex={tweetIndex} tweetPageNum={tweetPageNum}/>
                   </div>
                 )
               )
             }
-          </InfiniteScroll>
+            </InfiniteScroll>
+          </div>
         )}
         
       </main>

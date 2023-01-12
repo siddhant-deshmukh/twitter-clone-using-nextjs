@@ -15,11 +15,11 @@ export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout
 }
-
+const queryClient = new QueryClient();
 export default function MyApp({ Component, pageProps:{session , ...pageProps} }: AppPropsWithLayout) {
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page)
-  const queryClient = new QueryClient();
+  
   return <SessionProvider session={session}>
       <AppProvider>
         <QueryClientProvider client={queryClient}>

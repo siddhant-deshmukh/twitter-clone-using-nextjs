@@ -30,7 +30,7 @@ const ContentImgs = ({tweetAttachments,setTweetAttachments} : {tweetAttachments:
         tweetAttachments.media?.length === 1 && 
         <div className="w-full h-fit overflow-hidden" style={{maxHeight:"500px"}}>
             {/* <img src={tweetAttachments.media[0].url} /> */}
-            <ImageCard handleClostBtn={handleCloseBtn} index={0} imgUrl={tweetAttachments.media[0].url}/>
+            <ImageCard handleClostBtn={handleCloseBtn} index={0} imgUrl={tweetAttachments.media[0].url as string}/>
         </div>
      }
      {

@@ -64,7 +64,7 @@ const TweetEditor = ({motive,otherTweet}:ITweetEditorProps) => {
     
 
     return (
-      <div className="flex" style={{ width: 500 }}>
+      <div className="flex " style={{ width: 500 }}>
         { session?.user.image &&
           <div className="w-fit shrink-0 px-2 py-2 ">
             <img className="w-10 h-10 rounded-full" src={session?.user?.image} alt="Rounded avatar"/>
@@ -191,8 +191,9 @@ async function UploadTweet(tweetContent:ITweetContent,tweetAttachments:ITweetFil
   console.log("UrlsFields",UrlsFields)
   console.log()
 
-  UrlsFields.forEach(async ({ url, fields },index:number) => {
-    let file = tweetAttachments.media[index].file
+  UrlsFields.forEach(async ({ url, fields }:{url:string,fields:any},index:number) => {
+    //@ts-ignore
+    let file = tweetAttachments?.media[index].file
     let formData = new FormData()
 
     Object.entries({ ...fields, file }).forEach(([key, value]) => {
@@ -209,9 +210,11 @@ async function UploadTweet(tweetContent:ITweetContent,tweetAttachments:ITweetFil
       mode:'no-cors',
       body: formData,
     }).catch(err=>console.log("Error to upload",err))
-  
+    //@ts-ignore
     if (upload.ok) {
       console.log('Uploaded successfully!',upload,url,fields)
+    }else{
+      console.log("error")
     }
     
   });
