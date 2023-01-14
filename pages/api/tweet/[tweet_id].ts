@@ -163,7 +163,7 @@ export async function getTweetRelatedItems(tweet_id:string,starting_at: number, 
   
   //console.log(Item)
   if(Item && Item.length>0){
-    if(Item[0].length < -1*starting_at){
+    if(Item[0].length < -1*starting_at && Item[0].length > total){
       Item[0].field = Item[0].field.slice(-1*starting_at-Item[0].length) 
     }
     const finalList = await Promise.all(Item[0].field.map(async (user_id:string,num:number)=>{

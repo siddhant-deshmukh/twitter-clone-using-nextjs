@@ -4,9 +4,9 @@ import { useInfiniteQuery } from 'react-query';
 import { IUserSnippet } from '../../../../models/User';
 
 const LikedBy = ({tweet_id}:{tweet_id:string}) => {
-  const fetchTweetFeed = async ({ pageParam = -7 }) => {
+  const fetchTweetFeed = async ({ pageParam = -15 }) => {
     //console.log(pageParam)
-    const likesPerPage : number = 7
+    const likesPerPage : number = 15
     const response = await fetch(
       `/api/tweet/${tweet_id}?get=like&startingAt=${pageParam}&inTotal=${likesPerPage}`
     );

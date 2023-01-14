@@ -4,15 +4,19 @@ export interface IUserSnippet{
     user_name:string,
     name:string,
     _id?:string,
-    avatar?:String,
-
+    avatar?:string,
+    about?:string,
 }
-
-export interface IUser extends IUserSnippet{
-    
-    email:string,
-    
+export interface IUserProfile extends IUserSnippet{
     dob?:Date,
+    num_followers?:number,
+    num_following?:number,
+    num_tweets?:number,
+    joined?:Date,
+    profile_pic?:String
+}
+export interface IUser extends IUserProfile{
+    email:string,
     auth_complete:boolean,
     accounts:{
         google?:{
@@ -26,14 +30,12 @@ export interface IUser extends IUserSnippet{
         }
     },
     password?:string,
-    about?:string,
     followers?:[Types.ObjectId],
     following?:[Types.ObjectId],
     tweets?:[Types.ObjectId],
     likes?:[Types.ObjectId],
+    media?:[Types.ObjectId],
     own_tweets_comments?:[Types.ObjectId],
-    joined?:Date,
-    profile_pic?:String
 }
 
 const UserSchema = new mongoose.Schema<IUser>({
@@ -50,6 +52,7 @@ const UserSchema = new mongoose.Schema<IUser>({
     tweets:[{type: mongoose.Schema.Types.ObjectId, ref: 'tweets'}],
     likes:[{type: mongoose.Schema.Types.ObjectId, ref: 'tweets_liked'}],
     own_tweets_comments:[{type: mongoose.Schema.Types.ObjectId, ref: 'own_tweets'}],
+    media:[{type: mongoose.Schema.Types.ObjectId, ref: 'own_tweets'}],
     joined:{type:Date,default: Date.now()},
 
     avatar:{type:String},

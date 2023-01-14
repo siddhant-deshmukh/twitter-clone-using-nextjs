@@ -5,6 +5,8 @@ import { useContextualRouting } from "next-use-contextual-routing";
 import { curryTweetEditor } from "../components/TweetEditor";
 import { curryAddUserName} from "../components/desktop/ModalComp/components/AddUserName"
 import { curryLikedBy } from "../components/desktop/ModalComp/components/LikedBy";
+import { curryRetweetedBy } from "../components/desktop/ModalComp/components/RetweetedBy";
+import { curryTwiitEditor } from "../components/TweetEditor/TwiitEditor";
 export const AppContext = React.createContext<ITwitterContext | null>(null);
 
 //@ts-ignore
@@ -30,9 +32,7 @@ export const AppProvider= ({children}) => {
       //"" | "tweet" | "login" | "signup" | "add_username" | "add_birthdate" | "liked_by" | "retweeted_by" | "edit_profile"
       switch(type){
         case "tweet" :
-          //console.log("Here ",checkTypes(curryTweetEditor,{motiv:"tweeter"}))
-          //_component = curryTweetEditor(parameters)
-          component = curryTweetEditor
+          component = curryTwiitEditor
           break
         case "login" :
           break
@@ -47,6 +47,7 @@ export const AppProvider= ({children}) => {
           component = curryLikedBy
           break
         case "retweeted_by" :
+          component = curryRetweetedBy
           break
         case "edit_profile" :
           break

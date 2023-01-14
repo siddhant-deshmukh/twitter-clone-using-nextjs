@@ -67,7 +67,7 @@ const TweetPage = ({TweetData,queryClient,tweetIndex,tweetPageNum}:{TweetData:IT
                 <Link href={`/tweet/${TweetData._id?.toString()}/?modal=liked_by`} >
                     {TweetData.num_likes} Like
                 </Link>
-                <Link href={""} >
+                <Link href={`/tweet/${TweetData._id?.toString()}/?modal=retweeted_by`} >
                     {TweetData.num_retweet} Retweet
                 </Link>
             </div>
@@ -91,6 +91,7 @@ const TweetPage = ({TweetData,queryClient,tweetIndex,tweetPageNum}:{TweetData:IT
 
 //@ts-ignore
 export async function UpdateTweet(_id:string,type:"liked" | "retweet",queryClient,tweetIndex:number,tweetPageNum:number){
+    console.log("Updating the tweet")
     if(queryClient){
         //@ts-ignore
         queryClient.setQueryData(['TweetFeed'],(oldData)=>{

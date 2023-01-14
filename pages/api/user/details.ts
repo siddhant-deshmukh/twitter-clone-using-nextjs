@@ -8,21 +8,7 @@ import { authOptions } from "../auth/[...nextauth]"
 import { getToken } from "next-auth/jwt"
 const secret = process.env.NEXTAUTH_SECRET
 
-export const GetUserSnippet = async (_id?:string,email?:string,username?:string) : Promise<{_id:string,name:string,username:string,avatar?:string,about?:string} | undefined | null>  =>{
-  var check_user;
-  const parameters : string[] = ["_id","user_name","avatar","about","name"]
-  if(_id){
-    check_user = await User.findById(_id,parameters) 
-  }else if(email){
-    check_user = await User.findOne({email},parameters) 
-  }else if(username){
-    check_user = await User.findOne({username},parameters) 
-  }else{
-    return undefined
-  }
-  //console.log(check_user)
-  return check_user
-}
+
 
 const handler  = async (req:NextApiRequest, res:NextApiResponse<any>) : Promise<any> => {
     try{
@@ -59,5 +45,21 @@ const handler  = async (req:NextApiRequest, res:NextApiResponse<any>) : Promise<
       return res.status(500).json({msg:"error",error});
     }
   };
+  
+  export async function GetUserSnippet(_id?:string,email?:string,username?:string) : Promise<{_id:string,name:string,username:string,avatar?:string,about?:string} | undefined | null> {
+    var check_user;
+    const parameters : string[] = ["_id","user_name","avatar","about","name"]
+    if(_id){
+      check_user = await User.findById(_id,parameters) 
+    }else if(email){
+      check_user = await User.findOne({email},parameters) 
+    }else if(username){
+      check_user = await User.findOne({username},parameters) 
+    }else{
+      return undefined
+    }
+    //console.log(check_user)
+    return check_user
+  }
   
   export default connectDB(handler);

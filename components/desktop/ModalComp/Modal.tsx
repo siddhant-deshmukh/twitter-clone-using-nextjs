@@ -1,13 +1,22 @@
 import { useRouter } from "next/router"
-import { useContext } from "react"
+import { useContext, useEffect, useState } from "react"
 import AppContext from "../../../context/TwitterContext"
+import { ITweetFileAttachments } from "../../../models/Tweet"
 import { IModalData, ITwitterContext } from "../../../types"
+import TweetEditor from "../../TweetEditor"
 
 export default function Modal(){
     // const {modalOn,setModalOn} = useContext(AppContext)
     //${modalOn?"":"hidden"}
     const router = useRouter()
     const {closeModal,modalData} = useContext(AppContext) as ITwitterContext 
+    useEffect(()=>{
+        console.log("Starting modal!")
+        return ()=>console.log("Closing the modal!!!")
+    },[])
+    const [tweetText,setTweetText] = useState<string>("Hello guys!")
+    const [tweetAttachments,setTweetAttachments] = useState<ITweetFileAttachments>({content_type:""})
+    //console.log("-------        modal   ------------------")
     return(
         <div id="defaultModal"  className={`absolute flex items-center bg-black bg-opacity-30 top-0 left-0 right-0 z-50 m-auto w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full`}>
         <div className="relative  mx-auto  w-full h-full max-w-2xl md:h-auto">
@@ -29,6 +38,11 @@ export default function Modal(){
                      {modalData?.component(modalData.parameters)}
                  </div>
                 }
+                {/* { modalData?.type === "tweet" &&
+                     <div className="p-2">   
+                     <TweetEditor motive='tweet' tweetText={tweetText} setTweetText={setTweetText} tweetAttachments={tweetAttachments} setTweetAttachments={setTweetAttachments}/>
+                 </div>
+                } */}
                 {/* {
                     JSON.stringify(modalData?.parameters)
                 } */}

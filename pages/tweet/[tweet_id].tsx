@@ -23,6 +23,9 @@ const Home: NextPageWithLayout = () => {
         if(modal === "liked_by" && !modalOn){
             openModal({title:"Liked by",url:"/liked_by",parameters:{tweet_id},type:"liked_by"})
         }
+        if(modal === "retweeted_by" && !modalOn){
+            openModal({title:"Retweeted by",url:"/retweeted_by",parameters:{tweet_id},type:"retweeted_by"})
+        }
         if(!modal && modalOn){
             closeModal({goBack:false})
         }
@@ -37,7 +40,7 @@ const Home: NextPageWithLayout = () => {
                 console.log("|||||", cachedTweet)
                 setTweetData(cachedTweet)
             }
-            // else{
+            else{
                 fetch(`${process.env.NEXT_PUBLIC_URL}/api/tweet/${tweet_id}`,{method:'GET'})
                     .then(res=>res.json())
                     .then(data=>{
@@ -45,7 +48,7 @@ const Home: NextPageWithLayout = () => {
                         console.log(data.tweet)
                         setTweetData(data.tweet)
                 })
-            // }
+            }
         }
     }, [tweet_id,setTweetData,queryClient])
     

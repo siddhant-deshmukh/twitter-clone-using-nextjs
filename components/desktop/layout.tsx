@@ -7,18 +7,25 @@ import Modal from './ModalComp/Modal'
 import AppContext from '../../context/TwitterContext'
 import { ITwitterContext } from '../../types'
 import { curryTweetEditor } from '../TweetEditor'
+import { ITweetFileAttachments } from '../../models/Tweet'
 
 export default function Layout({children} : {children : React.ReactNode}){
   const router = useRouter()
   const pathName = router.pathname
   const {modal} = router.query 
   const {modalOn,openModal,closeModal} = useContext(AppContext) as ITwitterContext
+
+  const [tweetText_,setTweetText_] = useState<string>("Hello guys!")
+  const [tweetAttachments_,setTweetAttachments_] = useState<ITweetFileAttachments>({content_type:""})
+
   useEffect(()=>{
-    //console.log(modal,modal === " tweet")
-    if(modal === "tweet" && !modalOn){
-      openModal({title:"",url:"/component/tweet",parameters:{motive:"tweet"},type:"tweet"})
+    //console.log("Layout Modal :", modal,modal === " tweet")
+    if(modal === "tweet"){
+      openModal({title:"",url:"/component/tweet",parameters:{motive:"tweet",tweetText:tweetText_,setTweetText:setTweetText_,tweetAttachments:tweetAttachments_,setTweetAttachments:setTweetAttachments_},type:"tweet"})
+    }else{
+      closeModal({goBack:false})
     }
-  },[modal,modalOn])
+  },[modal])
   const get_title = (pathName : String)=>{
     let title : String;
     switch(pathName){
@@ -57,7 +64,6 @@ export default function Layout({children} : {children : React.ReactNode}){
           </div>
           {modalOn && <Modal />}
       </main>
-      
     </>
   )
 }

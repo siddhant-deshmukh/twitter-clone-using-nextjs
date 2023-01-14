@@ -14,32 +14,41 @@ const TweetCard = ({TweetData,tweetIndex,queryClient,tweetPageNum}:{TweetData:IT
     const btnTypes = ["view","comment","retweet","like"]
     const updateTweet = useCallback((type:"liked" | "retweet" | "")=>{
       if(type!== "liked" && type!=="retweet") return
-      if(TweetData && status === "authenticated" && tweetIndex && tweetPageNum){
+      console.log("Meow \n/n\n/n",type,TweetData,status,tweetIndex,tweetPageNum);
+      console.log(TweetData && status === "authenticated" && tweetIndex && tweetPageNum,typeof tweetIndex,typeof tweetPageNum)
+      if(TweetData && status === "authenticated" && queryClient){
         UpdateTweet(TweetData._id as string,type,queryClient,tweetIndex,tweetPageNum)
       }
-    },[TweetData,status])
+    },[TweetData,status,tweetIndex,tweetPageNum,queryClient])
+
+    const changePath = useCallback((url:string)=>{
+        router.push(url)
+    },[router])
     //console.log(TweetData)
+    //onClick={(e)=>{e.preventDefault(); router.push(`/tweet/${TweetData._id}?tweetIndex=${tweetIndex}&tweetPageNum=${tweetPageNum}`)}}
     return (
         <>
         { TweetData &&
-        <Link href={`/tweet/${TweetData._id}?tweetIndex=${tweetIndex}&tweetPageNum=${tweetPageNum}`} className="hover:cursor-pointer" >
+        <div onClick={(e)=>{e.preventDefault(); changePath(`/tweet/${TweetData._id}?tweetIndex=${tweetIndex}&tweetPageNum=${tweetPageNum}`)}}  className="hover:cursor-pointer" >
             <div className="py-2 px-1 flex border border-gray-200 text-left" style={{ width: 500 }}>
 
-                <Link href={`/home`}>
-                    <div  className="w-fit shrink-0 px-2 py-2">
+                <div  className="w-fit shrink-0 px-2 py-2">
+                    <Link onClick={(event)=>{event.stopPropagation(); changePath(`/user/${TweetData.author}`)}}  href={`/user/${TweetData.author}`} >
                         <img className="w-8 h-8 rounded-full bg-black hover:opacity-20" src={TweetData.authorDetails?.avatar} alt={TweetData.authorDetails?.name}/>
-                    </div>
-                </Link>
+                    </Link>
+                </div>
                 <div className="w-full">
-                    <div className="flex space-x-1 min-w-0 items-center">
-                        <Link href={`/home`}>
-                            <p className="text-base font-medium hover:underline text-gray-900 truncate dark:text-white">
-                                {TweetData.authorDetails?.name}
-                            </p>
+                    <div className="h-fit  w-fit m-0 ">
+                        <Link  onClick={(event)=>{event.stopPropagation(); changePath(`/user/${TweetData.author}`)}} href={`/user/${TweetData.author}`} className="">
+                            <div className="flex space-x-1 min-w-0 items-center">
+                                <p className="text-base font-medium hover:underline text-gray-900 truncate dark:text-white">
+                                    {TweetData.authorDetails?.name}
+                                </p>
+                                <p className="text-sm text-gray-500  hover:underline truncate dark:text-gray-400">
+                                    @{TweetData.authorDetails?.user_name}
+                                </p>
+                            </div>
                         </Link>
-                        <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                            @{TweetData.authorDetails?.user_name}
-                        </p>
                     </div>
                     <p className="text-sm" >
                         {TweetData?.text}
@@ -50,8 +59,10 @@ const TweetCard = ({TweetData,tweetIndex,queryClient,tweetPageNum}:{TweetData:IT
                                 <TweetButtons TweetData={TweetData} updateTweet={updateTweet} btnType={btn_type} />
                                 </div>)
                         } */}
-                        <div className="flex items-center space-x-20 text-sm">
-                            <button className={`group flex space-x-0.5 text-gray-500 hover:text-blue-400 items-center`}>
+                        <div className="flex items-center space-x-16 text-sm">
+                            <button className={`group flex p-2 space-x-0.5 text-gray-500 hover:text-blue-400 items-center`}
+                                onClick={(event)=>{event.preventDefault();  event.stopPropagation()}}
+                                >
                                 <div className="group-hover:bg-blue-100 p-1.5 w-fit h-fit rounded-full">
                                     <ChartBarSvg hoverColor="" fillColor="none" />
                                 </div>
@@ -59,7 +70,9 @@ const TweetCard = ({TweetData,tweetIndex,queryClient,tweetPageNum}:{TweetData:IT
                                     {TweetData.num_views}
                                 </div>
                             </button>
-                            <button className="group flex space-x-0.5 text-gray-500 hover:text-blue-400 items-center">
+                            <button className="group flex p-2 space-x-0.5 text-gray-500 hover:text-blue-400 items-center"
+                                onClick={(event)=>{event.preventDefault();  event.stopPropagation()}}
+                                >
                                 <div className="group-hover:bg-blue-100 p-1.5 w-fit h-fit rounded-full">
                                     <ChatBubbleSvg hoverColor="text-blue-400" fillColor="white" />
                                 </div>
@@ -68,8 +81,8 @@ const TweetCard = ({TweetData,tweetIndex,queryClient,tweetPageNum}:{TweetData:IT
                                 </div>
                             </button>
                             <button 
-                                onClick={(event)=>{event.preventDefault(); updateTweet("retweet")}}
-                                className={`group flex space-x-0.5 ${(TweetData.has_retweet)?"text-green-500":"text-gray-500"} hover:text-green-500 items-center`}>
+                                onClick={(event)=>{event.preventDefault();  updateTweet("retweet"); event.stopPropagation()}}
+                                className={`group flex p-2 space-x-0.5 ${(TweetData.has_retweet)?"text-green-500":"text-gray-500"} hover:text-green-500 items-center`}>
                                 <div className="group-hover:bg-green-50 p-1.5 w-fit h-fit rounded-full">
                                     <DoubeArrowSvg hoverColor="" fillColor="none" />
                                 </div>
@@ -78,8 +91,8 @@ const TweetCard = ({TweetData,tweetIndex,queryClient,tweetPageNum}:{TweetData:IT
                                 </div>
                             </button>
                             <button 
-                                onClick={(event)=>{event.preventDefault(); updateTweet("liked")}}
-                                className={`group flex space-x-0.5 ${(TweetData.has_liked)?"text-red-500":"text-gray-500"} hover:text-red-500 items-center`}>
+                                onClick={(event)=>{event.preventDefault(); updateTweet("liked"); event.stopPropagation()}}
+                                className={`group flex p-2 space-x-0.5 ${(TweetData.has_liked)?"text-red-500":"text-gray-500"} hover:text-red-500 items-center`}>
                                 <div className="group-hover:bg-red-100 p-1.5 w-fit h-fit rounded-full">
                                     <HeartSvg hoverColor="" fillColor={(TweetData.has_liked)?"red":"none"} />
                                 </div>
@@ -91,7 +104,7 @@ const TweetCard = ({TweetData,tweetIndex,queryClient,tweetPageNum}:{TweetData:IT
                     </div>
                 </div>
             </div>
-        </Link>
+        </div>
         }
         </>
     );

@@ -6,8 +6,9 @@ import AppContext from "../../context/TwitterContext";
 import ContentImgs from "./ContentImgs";
 import { IMedia } from "../../models/Media";
 import Axios from "axios"
+import CImages from "./CImages";
 
-const TweetEditor = ({motive,otherTweet,tweetText,setTweetText,tweetAttachments,setTweetAttachments}:ITweetEditorProps) => {
+const TwiitEditor = ({motive,otherTweet,tweetText,setTweetText,tweetAttachments,setTweetAttachments}:ITweetEditorProps) => {
     
     const {closeModal,modalData} = useContext(AppContext) as ITwitterContext 
 
@@ -100,7 +101,7 @@ const TweetEditor = ({motive,otherTweet,tweetText,setTweetText,tweetAttachments,
           {
             tweetAttachments.content_type === "media" && 
             
-            <ContentImgs tweetAttachments={tweetAttachments} setTweetAttachments={setTweetAttachments} />
+            <CImages tweetAttachments={tweetAttachments} setTweetAttachments={setTweetAttachments} />
           }
           <div className="flex border-t justify-between w-full border-blue-100 pt-2" style={{fontSize:"15px"}}>
             <div className="flex items-center">
@@ -230,8 +231,8 @@ async function UploadTweet(tweetContent:ITweetContent,tweetAttachments:ITweetFil
   console.log("response",res)
 }
 
-export const curryTweetEditor = ({motive,otherTweet,tweetText,setTweetText,tweetAttachments,setTweetAttachments}:ITweetEditorProps) =>{
+export const curryTwiitEditor = ({motive,otherTweet,tweetText,setTweetText,tweetAttachments,setTweetAttachments}:ITweetEditorProps) =>{
   
-  return TweetEditor({motive,otherTweet,tweetText,setTweetText,tweetAttachments,setTweetAttachments})
+  return TwiitEditor({motive,otherTweet,tweetText,setTweetText,tweetAttachments,setTweetAttachments})
 }
-export default TweetEditor
+export default TwiitEditor

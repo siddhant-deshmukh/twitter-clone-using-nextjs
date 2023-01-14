@@ -1,5 +1,6 @@
 import { Types } from "mongoose"
 import React from "react"
+import { ITweetFileAttachments } from "../models/Tweet"
 import { IUser } from "../models/User"
 
 export interface IModalData {
@@ -27,7 +28,11 @@ export interface UserEmailPasswordSingUpCredentials {
 
 export interface ITweetEditorProps{
   motive : "tweet" | "reply" | "quote",
-  otherTweet? : Types.ObjectId 
+  otherTweet? : Types.ObjectId,
+  tweetText : string,
+  setTweetText :  React.Dispatch<React.SetStateAction<string>>,
+  tweetAttachments:ITweetFileAttachments,
+  setTweetAttachments:React.Dispatch<React.SetStateAction<ITweetFileAttachments>>, 
 } 
 
 export interface UserEmailPasswordLogInCredentials {

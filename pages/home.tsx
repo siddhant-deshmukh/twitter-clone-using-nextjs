@@ -1,9 +1,9 @@
 import Layout from "../components/desktop/layout"
 import { NextPageWithLayout } from './_app'
-import { ReactElement} from 'react'
+import { ReactElement, useState} from 'react'
 import TweetEditor from '../components/TweetEditor/index'
 import TweetCard from '../components/tweet/TweetCard'
-import { ITweet } from '../models/Tweet'
+import { ITweet, ITweetFileAttachments } from '../models/Tweet'
 import { useInfiniteQuery, useQueryClient} from "react-query"
 import InfiniteScroll from "react-infinite-scroller"
 
@@ -34,12 +34,15 @@ const Home : NextPageWithLayout= () =>{
         return undefined;
       }
   });
+  const [tweetText,setTweetText] = useState<string>("Whatsup guys!")
+  const [tweetAttachments,setTweetAttachments] = useState<ITweetFileAttachments>({content_type:""})
+
   const queryClient = useQueryClient()
   return (
     <>
       <main className='w-fit'>
         <div className='font-semibold py-2 '>Home</div>
-        <TweetEditor motive='tweet' />
+        <TweetEditor motive='tweet' tweetText={tweetText} setTweetText={setTweetText} tweetAttachments={tweetAttachments} setTweetAttachments={setTweetAttachments}/>
         {/* <div>
           {tweetList && tweetList.map((tweet,index)=>{
             return <div key={index}>
