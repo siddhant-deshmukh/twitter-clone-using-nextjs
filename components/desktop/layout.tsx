@@ -5,7 +5,7 @@ import SideBar from './SideBar'
 import LoginBtn from '../login-button'
 import Modal from './ModalComp/Modal'
 import AppContext from '../../context/TwitterContext'
-import { ITwitterContext } from '../../types'
+import { ITweetEditorProps, ITwitterContext } from '../../types'
 import { curryTweetEditor } from '../TweetEditor'
 import { ITweetFileAttachments } from '../../models/Tweet'
 
@@ -21,7 +21,8 @@ export default function Layout({children} : {children : React.ReactNode}){
   useEffect(()=>{
     //console.log("Layout Modal :", modal,modal === " tweet")
     if(modal === "tweet"){
-      openModal({title:"",url:"/component/tweet",parameters:{motive:"tweet",tweetText:tweetText_,setTweetText:setTweetText_,tweetAttachments:tweetAttachments_,setTweetAttachments:setTweetAttachments_},type:"tweet"})
+      const tweetEditorProps : ITweetEditorProps = {motive:"tweet",tweetText:tweetText_,setTweetText:setTweetText_,tweetAttachments:tweetAttachments_,setTweetAttachments:setTweetAttachments_}
+      openModal({title:"",url:"/component/tweet",parameters:tweetEditorProps  ,type:"tweet"})
     }else{
       closeModal({goBack:false})
     }
@@ -62,7 +63,7 @@ export default function Layout({children} : {children : React.ReactNode}){
                 <LoginBtn />
             </div>
           </div>
-          {modalOn && <Modal />}
+          <Modal />
       </main>
     </>
   )

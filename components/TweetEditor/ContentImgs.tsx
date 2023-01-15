@@ -1,3 +1,4 @@
+import { useEffect } from "react"
 import { IContent, ITweetFileAttachments } from "../../models/Tweet"
 
 type handleCloseBtn = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number) => void
@@ -13,11 +14,15 @@ const ImageCard = ({handleClostBtn,imgUrl,index} : {handleClostBtn:handleCloseBt
     )
 }
 
-const ContentImgs = ({tweetAttachments,setTweetAttachments} : {tweetAttachments:ITweetFileAttachments,setTweetAttachments:React.Dispatch<React.SetStateAction<ITweetFileAttachments>>})   => {
+const ContentImgs = ({tweetAttachments_,settweetAttachments_,fromWhere} : {tweetAttachments_:ITweetFileAttachments,settweetAttachments_:React.Dispatch<React.SetStateAction<ITweetFileAttachments>>,fromWhere?:string})   => {
 
+
+  useEffect(()=>{
+    console.log("Starting Content Imags!!!!!!!!!!")
+  },[])
   const handleCloseBtn : handleCloseBtn = (event,index) => {
     event.preventDefault()
-    setTweetAttachments((prev)=>{
+    settweetAttachments_((prev)=>{
         console.log(prev)
         prev.media?.splice(index,1)
         console.log(index,"Updated :",prev.media)
@@ -25,56 +30,56 @@ const ContentImgs = ({tweetAttachments,setTweetAttachments} : {tweetAttachments:
     })
   }
   return (
-   <>
+   <div id="Content Images">
      {
-        tweetAttachments.media?.length === 1 && 
+        tweetAttachments_.media?.length === 1 && 
         <div className="w-full h-fit overflow-hidden" style={{maxHeight:"500px"}}>
-            {/* <img src={tweetAttachments.media[0].url} /> */}
-            <ImageCard handleClostBtn={handleCloseBtn} index={0} imgUrl={tweetAttachments.media[0].url as string}/>
+            {/* <img src={tweetAttachments_.media[0].url} /> */}
+            <ImageCard handleClostBtn={handleCloseBtn} index={0} imgUrl={tweetAttachments_.media[0].url as string}/>
         </div>
      }
      {
-        tweetAttachments.media?.length as number > 1 && 
+        tweetAttachments_.media?.length as number > 1 && 
         <div className="w-full  grid grid-cols-2 grid-rows-2" style={{height:"300px"}}>
-            <div className={`${(tweetAttachments.media?.length as number >3)?"":"row-span-2" } max-h-full`}>
+            <div className={`${(tweetAttachments_.media?.length as number >3)?"":"row-span-2" } max-h-full`}>
                 {/** //@ts-ignore */}
                 <ImageCard 
                     handleClostBtn={handleCloseBtn} index={0} 
                     /*
                     // @ts-ignore */
-                    imgUrl={tweetAttachments.media[0].url}
+                    imgUrl={tweetAttachments_.media[0].url}
                 /> 
-                {tweetAttachments.media?.length as number >3 
+                {tweetAttachments_.media?.length as number >3 
                   && 
                   <ImageCard 
                     handleClostBtn={handleCloseBtn} 
                     index={3} 
                     /*
                     // @ts-ignore */
-                    imgUrl={tweetAttachments.media[3].url}
+                    imgUrl={tweetAttachments_.media[3].url}
                   />
                 }
             </div>
-            <div className={`${(tweetAttachments.media?.length as number > 2)?"":"row-span-2" } max-h-full`}>
+            <div className={`${(tweetAttachments_.media?.length as number > 2)?"":"row-span-2" } max-h-full`}>
                 <ImageCard 
                   handleClostBtn={handleCloseBtn} 
                   index={1} 
                   /*
                   // @ts-ignore */
-                  imgUrl={tweetAttachments.media[1].url}/>
-                {tweetAttachments.media?.length as number >2 
+                  imgUrl={tweetAttachments_.media[1].url}/>
+                {tweetAttachments_.media?.length as number >2 
                   && <ImageCard 
                     handleClostBtn={handleCloseBtn} 
                     index={2} 
                     /*
                     // @ts-ignore */
-                    imgUrl={tweetAttachments.media[2].url}
+                    imgUrl={tweetAttachments_.media[2].url}
                     />
                 }
             </div>
         </div>
      }
-   </>
+   </div>
   )
 }
 

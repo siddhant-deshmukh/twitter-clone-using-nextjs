@@ -7,9 +7,12 @@ import ContentImgs from "./ContentImgs";
 import { IMedia } from "../../models/Media";
 import Axios from "axios"
 
-const TweetEditor = ({motive,otherTweet,tweetText,setTweetText,tweetAttachments,setTweetAttachments}:ITweetEditorProps) => {
+const TweetEditor = () => {
     
     const {closeModal,modalData} = useContext(AppContext) as ITwitterContext 
+    const [tweetText,settweetText] = useState<string>("Hello guys!")
+    const [tweetAttachments_,settweetAttachments_] = useState<ITweetFileAttachments>({content_type:""})
+    console.log(" Tweet Editor Render")
 
     //@ts-ignore
     const uploadTweet = useCallback(async (event) =>{
@@ -19,16 +22,16 @@ const TweetEditor = ({motive,otherTweet,tweetText,setTweetText,tweetAttachments,
         parent_tweet:null,
         tagged_people:[],
         content:{
-          content_type:tweetAttachments.content_type,
+          content_type:tweetAttachments_.content_type,
         }
       }
       
-      if(tweetText.trim() !== "" || tweetAttachments.content_type !== ""){
+      if(tweetText.trim() !== "" || tweetAttachments_.content_type !== ""){
         //console.log(process.env.NEXT_PUBLIC_URL)
-        await UploadTweet(tweetContent,tweetAttachments)
+        await UploadTweet(tweetContent,tweetAttachments_)
         closeModal({goBack:true})
       }
-    },[tweetText,tweetAttachments])
+    },[tweetText,tweetAttachments_])
     const { data: session } = useSession()
 
     useEffect(()=>{
@@ -52,13 +55,13 @@ const TweetEditor = ({motive,otherTweet,tweetText,setTweetText,tweetAttachments,
         }
         //console.log(mediaFiles)
         
-        let new_tweetAttachments : ITweetFileAttachments = {content_type:"media",media:mediaFiles}
-        if(tweetAttachments.media){
-          new_tweetAttachments.media = tweetAttachments.media?.concat(mediaFiles)
+        let new_tweetAttachments_ : ITweetFileAttachments = {content_type:"media",media:mediaFiles}
+        if(tweetAttachments_.media){
+          new_tweetAttachments_.media = tweetAttachments_.media?.concat(mediaFiles)
         }
-        setTweetAttachments((prev)=>{
-          console.log(prev,new_tweetAttachments)
-          return new_tweetAttachments
+        settweetAttachments_((prev)=>{
+          console.log(prev,new_tweetAttachments_)
+          return new_tweetAttachments_
         })
         // setTweetContent(prev=>{
         //   return {
@@ -66,8 +69,8 @@ const TweetEditor = ({motive,otherTweet,tweetText,setTweetText,tweetAttachments,
         //     content_type:"media"
         //   }
         // })
-        // console.log(new_tweetAttachments,tweetAttachments)
-    },[tweetAttachments,setTweetAttachments]) 
+        // console.log(new_tweetAttachments_,tweetAttachments_)
+    },[tweetAttachments_,settweetAttachments_]) 
 
     
 
@@ -92,15 +95,14 @@ const TweetEditor = ({motive,otherTweet,tweetText,setTweetText,tweetAttachments,
           <div 
              contentEditable suppressContentEditableWarning={true} 
              className="py-4 break-all  border-none break-normal outline-none  overflow-ellipsis"
-             onInput={e => setTweetText(e.currentTarget.textContent as string)}
+             onInput={e => settweetText(e.currentTarget.textContent as string)}
              placeholder="Enter your text here"
             >
             
           </div>
           {
-            tweetAttachments.content_type === "media" && 
-            
-            <ContentImgs tweetAttachments={tweetAttachments} setTweetAttachments={setTweetAttachments} />
+            tweetAttachments_.content_type === "media" && 
+            <ContentImgs tweetAttachments_ ={tweetAttachments_} settweetAttachments_={settweetAttachments_} />
           }
           <div className="flex border-t justify-between w-full border-blue-100 pt-2" style={{fontSize:"15px"}}>
             <div className="flex items-center">
@@ -116,7 +118,7 @@ const TweetEditor = ({motive,otherTweet,tweetText,setTweetText,tweetAttachments,
                     </svg>
                   </div>
                 </label>
-              </div>
+              </div> Tweet Editor Render
               <button className="place-content-center">
                 <div className="w-fit p-1.5 hover:bg-blue-50 rounded-full">
                   <svg viewBox="0 0 24 24" aria-hidden="true" className="w-4 h-4 fill-blue-500">
@@ -185,14 +187,14 @@ const TweetEditor = ({motive,otherTweet,tweetText,setTweetText,tweetAttachments,
     );
 }
 
-async function UploadTweet(tweetContent:ITweetContent,tweetAttachments:ITweetFileAttachments) {
+async function UploadTweet(tweetContent:ITweetContent,tweetAttachments_:ITweetFileAttachments) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/tweet`,{
     method:'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     //@ts-ignore
-    body:JSON.stringify({tweetContent,tweetAttachments})
+    body:JSON.stringify({tweetContent,tweetAttachments_})
   }).then((res)=> res.json())
   //const res = await authenticator()
   const {UrlsFields} = res
@@ -200,9 +202,9 @@ async function UploadTweet(tweetContent:ITweetContent,tweetAttachments:ITweetFil
   console.log("UrlsFields",UrlsFields)
   console.log()
 
-  UrlsFields.forEach(async ({ url, fields }:{url:string,fields:any},index:number) => {
+  UrlsFields?.forEach(async ({ url, fields }:{url:string,fields:any},index:number) => {
     //@ts-ignore
-    let file = tweetAttachments?.media[index].file
+    let file = tweetAttachments_?.media[index].file
     let formData = new FormData()
 
     Object.entries({ ...fields, file }).forEach(([key, value]) => {
@@ -230,8 +232,8 @@ async function UploadTweet(tweetContent:ITweetContent,tweetAttachments:ITweetFil
   console.log("response",res)
 }
 
-export const curryTweetEditor = ({motive,otherTweet,tweetText,setTweetText,tweetAttachments,setTweetAttachments}:ITweetEditorProps) =>{
+export const curryTweetEditor = () =>{
   
-  return TweetEditor({motive,otherTweet,tweetText,setTweetText,tweetAttachments,setTweetAttachments})
+  return TweetEditor()
 }
 export default TweetEditor

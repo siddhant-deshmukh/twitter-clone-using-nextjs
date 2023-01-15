@@ -6,25 +6,26 @@ import { IUserSnippet } from '../../../../models/User';
 const RetweetedBy = ({tweet_id}:{tweet_id:string}) => {
   const fetchReTweetFeed = async ({ pageParam = -15 }) => {
     //console.log(pageParam)
-    const retweetsPerPage : number = 15
-    const response = await fetch(
-      `/api/tweet/${tweet_id}?get=retweet&startingAt=${pageParam}&inTotal=${retweetsPerPage}`
-    );
-    const {length , by:results}  = await response.json();
-    console.log("retweeted by", results,-1*pageParam)
-    return { results, nextPage: pageParam - retweetsPerPage,tillNow:-1*pageParam, retweetsPerPage,length};
+      const retweetsPerPage : number = 15
+      const response = await fetch(
+        `/api/tweet/${tweet_id}?get=retweet&startingAt=${pageParam}&inTotal=${retweetsPerPage}`
+      );
+      const {length , by:results}  = await response.json();
+      console.log("retweeted by", results,-1*pageParam)
+      return { results, nextPage: pageParam - retweetsPerPage,tillNow:-1*pageParam, retweetsPerPage,length};
   };
   const { data, isLoading, isError, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: [tweet_id,"retweeted_by"], 
-    queryFn:fetchReTweetFeed, 
-    staleTime:1000*60*1,
-    // keepPreviousData: true,
-    getNextPageParam: (lastPage, pages) => {
-      //console.log(lastPage.results.length , lastPage.nextPage)
-      if (lastPage.tillNow < lastPage.length) return lastPage.nextPage;
-      return undefined;
-    }
+      queryKey: [tweet_id,"retweeted_by"], 
+      queryFn:fetchReTweetFeed, 
+      staleTime:1000*60*1,
+      // keepPreviousData: true,
+      getNextPageParam: (lastPage, pages) => {
+        //console.log(lastPage.results.length , lastPage.nextPage)
+        if (lastPage.tillNow < lastPage.length) return lastPage.nextPage;
+        return undefined;
+      }
   });
+  
   return (
     <div className=' h-96 p-4 overflow-y-scroll' style={{width:"750px"}}>
       {isLoading ? (

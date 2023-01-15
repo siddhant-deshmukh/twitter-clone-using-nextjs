@@ -6,7 +6,6 @@ import { curryTweetEditor } from "../components/TweetEditor";
 import { curryAddUserName} from "../components/desktop/ModalComp/components/AddUserName"
 import { curryLikedBy } from "../components/desktop/ModalComp/components/LikedBy";
 import { curryRetweetedBy } from "../components/desktop/ModalComp/components/RetweetedBy";
-import { curryTwiitEditor } from "../components/TweetEditor/TwiitEditor";
 export const AppContext = React.createContext<ITwitterContext | null>(null);
 
 //@ts-ignore
@@ -32,7 +31,7 @@ export const AppProvider= ({children}) => {
       //"" | "tweet" | "login" | "signup" | "add_username" | "add_birthdate" | "liked_by" | "retweeted_by" | "edit_profile"
       switch(type){
         case "tweet" :
-          component = curryTwiitEditor
+          component = curryTweetEditor
           break
         case "login" :
           break
