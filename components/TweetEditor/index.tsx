@@ -7,10 +7,11 @@ import ContentImgs from "./ContentImgs";
 import { IMedia } from "../../models/Media";
 import Axios from "axios"
 
-const TweetEditor = ({motive,otherTweet,tweetText,setTweetText,tweetAttachments,setTweetAttachments}:ITweetEditorProps) => {
+const TweetEditor = ({motive,otherTweet}:ITweetEditorProps) => {
     
     const {closeModal,modalData} = useContext(AppContext) as ITwitterContext 
-
+    const [tweetText,setTweetText] = useState<string>("Hello guys!")
+    const [tweetAttachments,setTweetAttachments] = useState<ITweetFileAttachments>({content_type:""})
     //@ts-ignore
     const uploadTweet = useCallback(async (event) =>{
       event.preventDefault()
@@ -106,8 +107,8 @@ const TweetEditor = ({motive,otherTweet,tweetText,setTweetText,tweetAttachments,
             <div className="flex items-center">
 
               <div>
-                <input type="file" id="select-media" onChange={handleSelectingMediaBtn} accept=".png, .jpg, .gif, .jpeg" hidden/>
-                <label className="place-content-center" htmlFor={"select-media"} >
+                <input type="file" id={`select-media-${motive?motive:""}`} onChange={handleSelectingMediaBtn} accept=".png, .jpg, .gif, .jpeg" hidden/>
+                <label className="place-content-center" htmlFor={`select-media-${motive?motive:""}`} >
                   <div className="w-fit p-1.5 hover:bg-blue-50 rounded-full hover:cursor-pointer">
                     <svg viewBox="0 0 24 24" aria-hidden="true" className="w-4 h-4 fill-blue-500">
                       <g>
@@ -230,8 +231,7 @@ async function UploadTweet(tweetContent:ITweetContent,tweetAttachments:ITweetFil
   console.log("response",res)
 }
 
-export const curryTweetEditor = ({motive,otherTweet,tweetText,setTweetText,tweetAttachments,setTweetAttachments}:ITweetEditorProps) =>{
-  
-  return TweetEditor({motive,otherTweet,tweetText,setTweetText,tweetAttachments,setTweetAttachments})
+export const curryTweetEditor = ({motive,otherTweet}:ITweetEditorProps) =>{
+  return TweetEditor({motive,otherTweet})
 }
 export default TweetEditor

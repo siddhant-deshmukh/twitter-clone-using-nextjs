@@ -42,7 +42,7 @@ const Home : NextPageWithLayout= () =>{
     <>
       <main className='w-fit'>
         <div className='font-semibold py-2 '>Home</div>
-        <TweetEditor motive='tweet' tweetText={tweetText} setTweetText={setTweetText} tweetAttachments={tweetAttachments} setTweetAttachments={setTweetAttachments}/>
+        <TweetEditor motive='home' />
         {/* <div>
           {tweetList && tweetList.map((tweet,index)=>{
             return <div key={index}>

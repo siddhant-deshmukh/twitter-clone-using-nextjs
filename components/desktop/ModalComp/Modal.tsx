@@ -33,16 +33,16 @@ export default function Modal(){
                     </h3>
                 </div>
                 {/* <!-- Modal body --> */}
-                { modalData?.component &&
+                {/* { modalData?.component &&
                      <div className="p-2">   
                      {modalData?.component(modalData.parameters)}
                  </div>
-                }
-                {/* { modalData?.type === "tweet" &&
-                     <div className="p-2">   
-                     <TweetEditor motive='tweet' tweetText={tweetText} setTweetText={setTweetText} tweetAttachments={tweetAttachments} setTweetAttachments={setTweetAttachments}/>
-                 </div>
                 } */}
+                { modalData?.type === "tweet" &&
+                     <div className="p-2">   
+                     <TweetEditor motive='modal' />
+                 </div>
+                }
                 {/* {
                     JSON.stringify(modalData?.parameters)
                 } */}

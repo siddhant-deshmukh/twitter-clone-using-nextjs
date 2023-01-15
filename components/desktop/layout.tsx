@@ -21,7 +21,7 @@ export default function Layout({children} : {children : React.ReactNode}){
   useEffect(()=>{
     //console.log("Layout Modal :", modal,modal === " tweet")
     if(modal === "tweet"){
-      openModal({title:"",url:"/component/tweet",parameters:{motive:"tweet",tweetText:tweetText_,setTweetText:setTweetText_,tweetAttachments:tweetAttachments_,setTweetAttachments:setTweetAttachments_},type:"tweet"})
+      openModal({title:"",url:"/component/tweet",parameters:{motive:"something",tweetText:tweetText_,setTweetText:setTweetText_,tweetAttachments:tweetAttachments_,setTweetAttachments:setTweetAttachments_},type:"tweet"})
     }else{
       closeModal({goBack:false})
     }

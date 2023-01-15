@@ -27,12 +27,12 @@ export interface UserEmailPasswordSingUpCredentials {
 }
 
 export interface ITweetEditorProps{
-  motive : "tweet" | "reply" | "quote",
+  motive : "home"|"modal", //"tweet" | "reply" | "quote",
   otherTweet? : Types.ObjectId,
-  tweetText : string,
-  setTweetText :  React.Dispatch<React.SetStateAction<string>>,
-  tweetAttachments:ITweetFileAttachments,
-  setTweetAttachments:React.Dispatch<React.SetStateAction<ITweetFileAttachments>>, 
+  // tweetText : string,
+  // setTweetText :  React.Dispatch<React.SetStateAction<string>>,
+  // tweetAttachments:ITweetFileAttachments,
+  // setTweetAttachments:React.Dispatch<React.SetStateAction<ITweetFileAttachments>>, 
 } 
 
 export interface UserEmailPasswordLogInCredentials {
