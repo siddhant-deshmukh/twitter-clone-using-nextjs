@@ -34,9 +34,7 @@ const Home : NextPageWithLayout= () =>{
         return undefined;
       }
   });
-  const [tweetText,setTweetText] = useState<string>("Whatsup guys!")
-  const [tweetAttachments,setTweetAttachments] = useState<ITweetFileAttachments>({content_type:""})
-
+  
   const queryClient = useQueryClient()
   return (
     <>

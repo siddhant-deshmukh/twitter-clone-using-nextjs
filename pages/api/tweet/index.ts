@@ -10,8 +10,7 @@ import Tweet, { ITweet, ITweetContent, ITweetFileAttachments } from '../../../mo
 import mongoose, { Types } from 'mongoose'
 import { GetUserSnippet } from '../user/details'
 import Media, { IMedia } from '../../../models/Media'
-import { s3Client } from '../../../lib/s3'
-import { createPresignedPost } from '@aws-sdk/s3-presigned-post'
+
 
 const secret = process.env.NEXTAUTH_SECRET
 
@@ -53,12 +52,12 @@ const handler  = async (req:NextApiRequest, res:NextApiResponse<any>) : Promise<
             }
 
 
-            if(tweetAttachments && tweetAttachments.content_type!==""){
-              if(tweetAttachments.content_type === "media"){
-                const UrlsFields = await getPresignedUrls(session.user._id,uploadedTweet,tweetAttachments)
-                return res.status(201).json({tweet:uploadedTweet,UrlsFields})
-              }
-            }
+            // if(tweetAttachments && tweetAttachments.content_type!==""){
+            //   if(tweetAttachments.content_type === "media"){
+            //     const UrlsFields = await getPresignedUrls(session.user._id,uploadedTweet,tweetAttachments)
+            //     return res.status(201).json({tweet:uploadedTweet,UrlsFields})
+            //   }
+            // }
             return res.status(201).json({tweet:uploadedTweet,updatedUser})
         } else {
           return res.status(401).json({msg:'authentication needed!'});
@@ -107,40 +106,40 @@ const handler  = async (req:NextApiRequest, res:NextApiResponse<any>) : Promise<
     }
   };
 
-async function getPresignedUrls(_id:string,uploadedTweet:ITweet,tweetAttachments:ITweetFileAttachments){
-    const Bucket = "twitter-clone-sd"
-    const Conditions = [{ acl: "public-read" }, { bucket: "twitter-clone-sd" },["starts-with", "$Content-Type", "image/"], ["content-length-range", 1024, 1024*1024*2 ]];
+// async function getPresignedUrls(_id:string,uploadedTweet:ITweet,tweetAttachments:ITweetFileAttachments){
+//     const Bucket = "twitter-clone-sd"
+//     const Conditions = [{ acl: "public-read" }, { bucket: "twitter-clone-sd" },["starts-with", "$Content-Type", "image/"], ["content-length-range", 1024, 1024*1024*2 ]];
 
-    const media_ids : Types.ObjectId[] = []
-    const Fields = {
-      acl: "public-read",
-    };
-    const UrlsFields : {url:string,fields:any}[] = []
-    const PromiseArray = tweetAttachments.media?.map((media : IMedia,index:number)=> async (media : IMedia,index:number)=>{
-      let Key = `twitter-media-files/${_id}/${uploadedTweet._id?.toString()}_${index}`;
-      //console.log(index , key)
-      const { url, fields } = await createPresignedPost(s3Client, {
-        Bucket,
-        Key, //@ts-ignore
-        Conditions,
-        Fields,
-        Expires: 3600, //Seconds before the presigned post expires. 3600 by default.
-      });
-      UrlsFields[index]={ url, fields }
-      console.log(index , url , Key, fields)
+//     const media_ids : Types.ObjectId[] = []
+//     const Fields = {
+//       acl: "public-read",
+//     };
+//     const UrlsFields : {url:string,fields:any}[] = []
+//     const PromiseArray = tweetAttachments.media?.map((media : IMedia,index:number)=> async (media : IMedia,index:number)=>{
+//       let Key = `twitter-media-files/${_id}/${uploadedTweet._id?.toString()}_${index}`;
+//       //console.log(index , key)
+//       const { url, fields } = await createPresignedPost(s3Client, {
+//         Bucket,
+//         Key, //@ts-ignore
+//         Conditions,
+//         Fields,
+//         Expires: 3600, //Seconds before the presigned post expires. 3600 by default.
+//       });
+//       UrlsFields[index]={ url, fields }
+//       console.log(index , url , Key, fields)
 
-      let media_doc = await Media.create({
-        ...media,
-        Key,
-        parent_tweet:uploadedTweet._id
-      })
-      media_ids[index] = media_doc._id.toString()
-    }
-    )
-    if(PromiseArray) await Promise.all( PromiseArray ) 
+//       let media_doc = await Media.create({
+//         ...media,
+//         Key,
+//         parent_tweet:uploadedTweet._id
+//       })
+//       media_ids[index] = media_doc._id.toString()
+//     }
+//     )
+//     if(PromiseArray) await Promise.all( PromiseArray ) 
 
-    console.log(UrlsFields)
-    return UrlsFields
-}
+//     console.log(UrlsFields)
+//     return UrlsFields
+// }
 
 export default connectDB(handler);
