@@ -1,63 +1,73 @@
 import mongoose,{Types} from "mongoose";
 
-export interface IUserSnippet{
+export interface IUserCreate{
     user_name:string,
     name:string,
-    _id?:string,
+    email:string,
+    
     avatar?:string,
     about?:string,
-}
-export interface IUserProfile extends IUserSnippet{
+
+    accounts:{
+        [key : string] : { sub? : string, password? : string}
+    },
     dob?:Date,
+}
+export interface IUserStored extends IUserCreate{
+    _id:Types.ObjectId,
+    
+    num_followers?:number,
+    num_following?:number,
+
+    num_tweets?:number,
+    followers:[Types.ObjectId],
+    following:[Types.ObjectId],
+}
+export interface IUserSnippet{
+
+    _id:Types.ObjectId,
+    user_name:string,
+    name:string,
+    avatar?:string,
+    about?:string,
+    followers:[string],
+    following:[string],
+}
+export interface IUser  extends IUserSnippet {
+    
+    followers:[string],
+    following:[string],
+
     num_followers?:number,
     num_following?:number,
     num_tweets?:number,
-    joined?:Date,
-    profile_pic?:String
-}
-export interface IUser extends IUserProfile{
-    email:string,
-    auth_complete:boolean,
-    accounts:{
-        google?:{
-            sub?:string,
-        },
-        password?:{
-            password:string,
-        },
-        github?:{
-            sub?:string,
-        }
-    },
-    password?:string,
-    followers?:[Types.ObjectId],
-    following?:[Types.ObjectId],
-    tweets?:[Types.ObjectId],
-    likes?:[Types.ObjectId],
-    media?:[Types.ObjectId],
-    own_tweets_comments?:[Types.ObjectId],
+
+    doesFollow?:true | false
 }
 
-const UserSchema = new mongoose.Schema<IUser>({
-    email: {type:String,required:true,unique:true},
-    name:{type:String,required:true,maxLength:40},
-    auth_complete:{type:Boolean,required:true,default:false},
+const UserSchema = new mongoose.Schema<IUserStored>({
+    email: {type:String,required:true,unique:true,maxLength:40,minlength:4},
+    name:{type:String,required:true,maxLength:40,minlength:4},
     accounts: {type:Map,required:true} ,
 
-    user_name : {type:String,maxLength:10,sparse:false,required:true,unique:true},
+    user_name : {type:String,maxLength:10,sparse:false,required:true,unique:true,minlength:2},
     dob:{type:Date,max:Date.now()},
     about:{type:String,maxLength:150},
+
     followers:[{type: mongoose.Schema.Types.ObjectId, ref: 'followers'}],
     following:[{type: mongoose.Schema.Types.ObjectId, ref: 'following'}],
-    tweets:[{type: mongoose.Schema.Types.ObjectId, ref: 'tweets'}],
-    likes:[{type: mongoose.Schema.Types.ObjectId, ref: 'tweets_liked'}],
-    own_tweets_comments:[{type: mongoose.Schema.Types.ObjectId, ref: 'own_tweets'}],
-    media:[{type: mongoose.Schema.Types.ObjectId, ref: 'own_tweets'}],
-    joined:{type:Date,default: Date.now()},
-
+    
+    num_tweets:{type:Number,default:0},
     avatar:{type:String},
-    profile_pic:{type:String},
 })
 
-const User = mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
+const User = mongoose.models.User || mongoose.model<IUserStored>("User", UserSchema);
 export default User
+
+/**
+ 
+mongoose.Model<IUserStored, {}, {}, {}, mongoose.Document<unknown, {}, IUserStored> & Omit<IUserStored & Required<{
+    _id: Types.ObjectId;
+}>, never>, any>
+
+ */
