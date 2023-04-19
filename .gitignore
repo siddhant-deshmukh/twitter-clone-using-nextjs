@@ -4,7 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
-/server/node_modules
+/fake-data/secret.js
 
 # testing
 /coverage
@@ -29,11 +29,11 @@ yarn-error.log*
 # local env files
 .env*.local
 
+.local.settings.json
+
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-azure-function

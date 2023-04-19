@@ -23,7 +23,7 @@ const useTweetsCache = (
                     have_liked: (new_.have_liked) ? (false) : true,
                     num_likes: (!new_.have_liked) ? (new_.num_likes + 1) : (new_.num_likes - 1)
                 }
-                console.log('liked')
+                // console.log('liked')
             }
             if (what === 'retweeted') {
                 new_ = {
@@ -42,7 +42,7 @@ const useTweetsCache = (
         if (!tweet_id || typeof tweet_id !== 'string') return;
         //@ts-ignore
         let check: ITweet | undefined = cache.get(`tweet/${tweet_id}`)
-        console.log('inside tweet_id', check)
+        // console.log('inside tweet_id', check)
         if (check && check._id) {
             setTweet(check)
             setLoading(false)

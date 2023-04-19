@@ -1,34 +1,22 @@
-import type { ReactElement, ReactNode } from 'react'
-import type { NextPage } from 'next'
+import Layout from '@/components/Layout'
+import { AuthContextProvider } from '@/context/authContext'
+import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
-import { SessionProvider } from "next-auth/react"
-import '../styles/globals.css'
-import { AppProvider } from '../context/TwitterContext'
+import Head from 'next/head'
 
-import { QueryClient, QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
+// export function reportWebVitals(metric) {
+//   console.log(metric)
+// }
 
-export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
-  getLayout?: (page: ReactElement) => ReactNode
-}
-
-type AppPropsWithLayout = AppProps & {
-  Component: NextPageWithLayout
-}
-const queryClient = new QueryClient();
-export default function MyApp({ Component, pageProps:{session , ...pageProps} }: AppPropsWithLayout) {
-  // Use the layout defined at the page level, if available
-  const getLayout = Component.getLayout ?? ((page) => page)
-  
-  return <SessionProvider session={session}>
-      <AppProvider>
-        <QueryClientProvider client={queryClient}>
-          {getLayout(
-            <Component {...pageProps} />  
-            )
-          }
-          <ReactQueryDevtools />
-        </QueryClientProvider >
-      </AppProvider>
-  </SessionProvider>
+export default function App({ Component, pageProps }: AppProps) {
+  return (
+    <AuthContextProvider>
+      <Head>
+        <title>Twitter</title>
+      </Head>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </AuthContextProvider>
+  )
 }

@@ -1,36 +1,29 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Twitter Clone (Deployed Version)
 
-## Getting Started
+This is a clone of Twitter made with NextJS. 
 
-First, run the development server:
+![Home Page](./imgs/home.png "/home")
 
-```bash
-npm run dev
-# or
-yarn dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+It uses 
+1. **tailwindcss** for styling 
+2. **SWR** for caching and state management in the frontend 
+3. **Azure Blob Storage** to upload and get image or media
+4. **Azure Cosmosdb for Mongodb** as the primary database.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+*Note: As this is the deployed version all the upload or POST, PUT, DELETE operations are done withing frontend by manipulating state and caching to get the full version check out main branch https://github.com/siddhant-deshmukh/twitter-clone-using-nextjs*
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Features
+1. To upload a tweet with upto 4 images
 
-## Learn More
+![Tweet Modal Editor Page](./imgs/tweet-modal.png "/tweet-modal")
+![Adding new tweet](./imgs/new_tweet.png "/new-tweet")
 
-To learn more about Next.js, take a look at the following resources:
+2. Like ,Retweet and comment on a tweet
+3. A good looking, responsive UI with Dark Mode
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+![Users page](./imgs/responsive-users-page.png "/users-page") 
+4. Home Feed, Users Page, Tweet Page and getting home feed, Comment Feed and Users tweet feed
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

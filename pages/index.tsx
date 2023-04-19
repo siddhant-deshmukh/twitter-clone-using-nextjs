@@ -1,28 +1,15 @@
+import styles from '@/styles/Home.module.css'
 import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from '@next/font/google'
-import Layout from "../components/desktop/layout"
-import { NextPageWithLayout } from './_app'
-import { ReactElement } from 'react'
 
-const inter = Inter({ subsets: ['latin'] })
 
-const Home : NextPageWithLayout= () =>{
+export default function Home() {
   return (
     <>
-      <div className="text-3xl font-bold underline">
-        Hello world!
-      </div>
+      <Head>
+        <title>Twitter</title>
+      </Head>
+      <main className={styles.main}>
+      </main>
     </>
   )
 }
-
-Home.getLayout = function getLayout(page: ReactElement){
-  return(
-    <Layout>
-      {page}
-    </Layout>
-  )
-}
-
-export default Home

@@ -25,20 +25,9 @@ export default async function handler(
   if (!user) {
     // return res.status(401).json({ msg: 'error in token!!' })
     // console.log("Getting temp")
-    let temp_user : IUserStored = await User.findOne({user_name : process.env.DEFAULT_USER_FOR_LOGIN_USERNAME}).select({accounts : 0})
-    if (temp_user && temp_user._id) {
-      const token = jwt.sign({ _id: temp_user._id.toString(), email: temp_user.email }, process.env.JWT_TOKEN_KEY || 'zhingalala', { expiresIn: '2h' })
-      res.setHeader('Set-Cookie', serialize('auth-token', token, {
-        httpOnly: false,
-        maxAge: 60 * 60 * 100000,
-        sameSite: 'strict',
-        path: '/',
-        
-      }))
-      return res.status(200).json(temp_user)
-    }else{
-      return res.status(500).json({msg:'Some error occured!'})
-    }
+    
+      return res.status(401).json({msg:'Unautherized!'})
+    
   }
 
   return res.status(200).json(user)

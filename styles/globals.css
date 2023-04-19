@@ -1,3 +1,54 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+@media (min-width: 600px){
+    .side-left-padding {
+        padding-left: calc(50% - 355px);
+    }
+}
+@media (min-width: 1020px){
+    .side-left-padding {
+        padding-left: calc(50% - 520px);
+    }
+}
+@media (min-width: 1108px){
+    .side-left-padding {
+        padding-left: calc(50% - 550px);
+    }
+}
+@media (min-width: 1300px){
+    .side-left-padding {
+        padding-left: calc(50% - 650px);
+    }
+}
+
+/* @media (max-width: 1340px){
+    .side-header {
+        width: fit-content;
+    }   
+}
+@media (min-width: 1296px) {
+    .side-header {
+        width: 100%;
+        max-width: calc(50% - 350px);
+    }
+    .main-content {
+        width: calc(45% + 500px);
+    }
+    .right-side-bar {
+        left: calc(50% + 270px);
+        width: 400px;
+        position: fixed;
+        top:0;
+    }
+}
+@media (max-width : 1296px) {
+    .right-side-bar {
+    width: 400px;
+    position: sticky;
+    top:0;
+}
+} */
+

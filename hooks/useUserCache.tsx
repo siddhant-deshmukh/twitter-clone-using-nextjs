@@ -57,7 +57,7 @@ const useUserCache = (
                 .then(data => {
                     if (data && data._id) {
                         setAuthor(data)
-                        console.log(data)
+                        // console.log(data)
                         //@ts-ignore
                         cache.set(`user/${data._id}`, data)
                     } else {

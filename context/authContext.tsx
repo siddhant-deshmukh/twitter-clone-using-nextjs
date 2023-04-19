@@ -4,11 +4,13 @@ import React, { useEffect, useState } from "react";
 export const AuthContext = React.createContext<{ 
     authLoading: boolean
     authState: IUser | null, 
-    setAuthState: React.Dispatch<React.SetStateAction<IUser | null>> 
+    setAuthState: React.Dispatch<React.SetStateAction<IUser | null>> ,
+    setAuthLoading: (value: React.SetStateAction<boolean>) => void
 }>({
     authLoading : true,
     authState: null,
-    setAuthState: ()=>{}
+    setAuthState: ()=>{},
+    setAuthLoading: ()=>{}
 })
 
 //@ts-ignore
@@ -30,7 +32,7 @@ export const AuthContextProvider = ({ children }) => {
     },[])
 
     return (
-        <AuthContext.Provider value={{ authState, setAuthState, authLoading }}>
+        <AuthContext.Provider value={{ authState, setAuthState, authLoading, setAuthLoading }}>
             {children}
         </AuthContext.Provider>
     )
