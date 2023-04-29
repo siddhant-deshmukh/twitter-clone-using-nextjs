@@ -76,6 +76,23 @@
   dependencies:
     tslib "^2.2.0"
 
+"@azure/msal-browser@^2.36.0":
+  version "2.36.0"
+  resolved "https://registry.yarnpkg.com/@azure/msal-browser/-/msal-browser-2.36.0.tgz#a95af979da1dd8572b6b3cb9fc86d51713d8ad91"
+  integrity sha512-OrVDZ9ftO7ExqZVHripAt+doKg6G14YbP2LoSygiWQoSqoO4CejoXLRLqANc/HGg18N0p/oaRETw4IHZvwsxZw==
+  dependencies:
+    "@azure/msal-common" "^12.1.0"
+
+"@azure/msal-common@^12.1.0":
+  version "12.1.0"
+  resolved "https://registry.yarnpkg.com/@azure/msal-common/-/msal-common-12.1.0.tgz#e253a4912a359193c52c570a1e2585cfd0213bff"
+  integrity sha512-9RUiv0evSHvYtvF7r9ksShw9FgCeT6Rf6JB/SOMbMzI0VySZDUBSE+0b9e7DgL2Ph8wSARIh3m8c5pCK9TRY3w==
+
+"@azure/msal-react@^1.5.6":
+  version "1.5.6"
+  resolved "https://registry.yarnpkg.com/@azure/msal-react/-/msal-react-1.5.6.tgz#5a14f754e4f8e3e90dac02e833cf11f91617c787"
+  integrity sha512-LCi1zr5ZGqspZN3MyeibH006Eqixtks9nz/Avxjo2OJGM3xKOdXLy6+qSyRJhwUUnLoGal+/0QJjlJoKyeRvAQ==
+
 "@azure/storage-blob@^12.13.0":
   version "12.13.0"
   resolved "https://registry.yarnpkg.com/@azure/storage-blob/-/storage-blob-12.13.0.tgz#9209cbb5c2cd463fb967a0f2ae144ace20879160"

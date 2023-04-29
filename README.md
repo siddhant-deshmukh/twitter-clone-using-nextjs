@@ -1,4 +1,4 @@
-# Twitter Clone (Deployed Version)
+# Twitter Clone
 
 This is a clone of Twitter made with NextJS. 
 
